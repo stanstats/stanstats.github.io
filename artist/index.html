@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Artists · album timeline (아티스트 앨범 히스토리)</title>
+  <meta name="description" content="Every K-pop artist in our database: album-by-album first-week sales changes, with the model's reasons. 아티스트별 앨범 초동 변화 타임라인.">
+  <meta name="theme-color" content="#f6f3ff">
+  <!-- share card: crawlers do not run JS, so og:image stays relative until SITE_URL is set; js/util.js seoMeta() makes it absolute at runtime -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="K-pop 초동 forecast">
+  <meta property="og:title" content="Album by album · K-pop 초동 forecast">
+  <meta property="og:description" content="Album-by-album first-week sales changes for K-pop artists, with the model's reasons for each rise and fall.">
+  <meta property="og:image" content="https://stanstats.github.io/img/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="K-pop 초동 forecast: how many copies will the next album sell in its first week?">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Album by album · K-pop 초동 forecast">
+  <meta name="twitter:description" content="Album-by-album first-week sales changes for K-pop artists, with the model's reasons for each rise and fall.">
+  <meta name="twitter:image" content="../img/og.png">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23ff5fa2'/%3E%3Ccircle cx='62' cy='40' r='22' fill='%237b61ff' opacity='.8'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/7.0.0/fuse.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+  <div class="bg" aria-hidden="true"><span class="c1"></span><span class="c2"></span><span class="c3"></span><span class="t1"></span><span class="c4"></span></div>
+
+  <div class="wrap">
+    <header class="site-header">
+      <a class="brand" href="../">K-pop <em>초동</em> forecast</a>
+      <nav class="nav" aria-label="Site">
+        <a href="../">Home</a>
+        <a href="./">Artists</a>
+        <a href="../findings/">Findings</a>
+        <a href="../about/">About</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <h1>Album by album <span class="kr" lang="ko">아티스트별 앨범 초동 히스토리</span></h1>
+        <p class="tagline">Search an artist, or tap one floating below. Each album shows how first-week sales moved versus the one before, and why the model thinks so.</p>
+      </section>
+
+      <section class="glass card" aria-label="Search">
+        <div class="field">
+          <label for="search-list">Artist</label>
+          <div id="search"></div>
+        </div>
+      </section>
+
+      <section id="cloud" class="cloud glass" aria-label="Random artists — tap one"></section>
+
+      <section id="artist-view" aria-live="polite"></section>
+    </main>
+
+    <footer class="site-footer">
+      Rosters and numbers are what our database says — <a href="../about/">tell us when we are wrong</a>
+    </footer>
+  </div>
+
+  <script type="module" src="../js/artist.js"></script>
+</body>
+</html>

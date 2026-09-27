@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>About · Purpose (이 사이트를 만든 이유)</title>
+  <meta name="description" content="Why a K-pop fan built a first-week album sales forecast, what data it uses, and how to get in touch.">
+  <meta name="theme-color" content="#f6f3ff">
+  <!-- share card: crawlers do not run JS, so og:image stays relative until SITE_URL is set; js/util.js seoMeta() makes it absolute at runtime -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="K-pop 초동 forecast">
+  <meta property="og:title" content="About · K-pop 초동 forecast">
+  <meta property="og:description" content="Why a K-pop fan built a first-week album sales forecast, what data it uses, and how to read the ranges.">
+  <meta property="og:image" content="https://stanstats.github.io/img/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="K-pop 초동 forecast: how many copies will the next album sell in its first week?">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="About · K-pop 초동 forecast">
+  <meta name="twitter:description" content="Why a K-pop fan built a first-week album sales forecast, what data it uses, and how to read the ranges.">
+  <meta name="twitter:image" content="../img/og.png">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23ff5fa2'/%3E%3Ccircle cx='62' cy='40' r='22' fill='%237b61ff' opacity='.8'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="bg" aria-hidden="true"><span class="c1"></span><span class="c2"></span><span class="c3"></span><span class="t1"></span><span class="c4"></span></div>
+
+  <div class="wrap">
+    <header class="site-header">
+      <a class="brand" href="../">K-pop <em>초동</em> forecast</a>
+      <nav class="nav" aria-label="Site">
+        <a href="../">Home</a>
+        <a href="../findings/">Findings</a>
+        <a href="./">About</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <h1>Purpose <span class="kr" lang="ko">이 사이트를 만든 이유</span></h1>
+        <p class="tagline">Cause I am a K-pop fan.</p>
+      </section>
+
+      <article class="glass card prose">
+        <p>If you are one too, you know the stories. The album that only happened because the members kept asking for it. The group that never got another comeback because the last one "didn't sell". I have watched artists I love wait for years for a chance that never came.</p>
+        <p>Inside the industry, the next album is planned off the last one. Someone looks at the previous first-week number, guesses the next, and decides. One miss makes it very hard to argue for another try.</p>
+        <p>So I tried to build a forecasting model from public data. I am a fan with some statistics, not an industry insider, and the model is a modest thing: it looks at what an artist has already done and gives a range for the next album.</p>
+        <p>K-pop is an art about people and feelings. Data does not replace that, and I don't want it to. The data is full of idols and fans who went far past anything a model expected, and those are my favourite rows.</p>
+        <p>The model gives a deliberately wide range, not a single number, and it is wrong often. Every card says so. Please treat it as a reference and nothing more.</p>
+        <p>This is a hobby: open source, non-profit, nobody pays for it and nobody is selling anything.</p>
+
+        <h3>About the clock</h3>
+        <p>The model only uses what is knowable about <strong>120 days before release</strong>, which is roughly when the "do we make this album?" decision happens. What it forecasts is the <strong>first-week sales figure (초동)</strong>, the number the industry actually judges a comeback by.</p>
+
+        <h3 id="how-to-read">How to read the forecast</h3>
+        <p>Every forecast card shows one number and three purple bands.</p>
+        <p><strong>The number</strong> is our middle guess for the artist's next album in first-week copies. Half of the time the real number would be above this, half below.</p>
+        <p><strong>The three purple bands</strong> are how sure we are: there is a 50% chance the real first week lands inside the darkest band, an 80% chance it lands inside the middle band, and a 90% chance it lands inside the widest one. Tap the ⓘ next to "Likely between" on any card to see these bands spelled out with that artist's numbers.</p>
+        <p><strong>How do we know?</strong> We tested the model on past albums, grouped by how big the artist's previous album was. Our guess was typically off by the "typical miss" below either way, and a share of the time it was off by more than double. Those past misses are what set the width of the bands:</p>
+        <table class="tiers" id="tier-table" aria-label="Historical misses by artist size">
+          <thead><tr><th>Previous album</th><th>Albums tested</th><th>Typical miss</th><th>Off by more than 2×</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <p><strong>The bands are wider on the upside</strong> because album sales move in multiples, not in fixed amounts — a jump to the top of the band and a drop to the bottom are the same size in percentage terms.</p>
+
+        <h3>Data</h3>
+        <p>Data as of <strong id="data-cutoff">…</strong><span id="model-version" class="muted"></span>.</p>
+        <p>If this site turns out to be useful to you, or if you spot something wrong, please let me know through the forms below. Hearing that it is being used is what makes me want to keep the data fresh and the model better.</p>
+
+        <h3 id="credits">Data &amp; credits</h3>
+        <p>This site is a hobby research project; it is not affiliated with, endorsed by, or sponsored by any chart, retailer, platform or company named below.</p>
+        <p>The forecasts are produced by a model trained on an <strong>internal dataset of physical album sales, compiled from public sales summaries and charts</strong>. It is not published here or in the code repository, and it is not shown on this site in raw form. Everything you see — the predicted range, the percentage changes, the tiers, the masked figures such as 14,*** — is derived from it and rounded so that no underlying sales figure can be recovered.</p>        <p>The explanatory signals the model looks at come mainly from these sources, and we are grateful to the people who maintain them:</p>
+        <ul class="credits">
+          <li><span class="dot"></span><div><b>Wikipedia</b> <a class="ext" href="https://www.wikipedia.org/" target="_blank" rel="noopener" aria-label="Wikipedia (opens in a new tab)">↗</a><span class="use">English, Korean and Japanese editions — artist facts, rosters, debut dates, military service and album metadata. Text available under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.</span></div></li>
+          <li><span class="dot"></span><div><b>Korean Sales</b> <a class="ext" href="https://koreansalestwt.blogspot.com/" target="_blank" rel="noopener" aria-label="Korean Sales blog (opens in a new tab)">↗</a><span class="use">A fan-maintained blog of per-artist album sales summaries (koreansalestwt.blogspot.com). It is the main public source the internal sales dataset was compiled from, and it also supplies album metadata such as release format and label. No sales figure from it is reproduced on this site.</span></div></li>
+          <li><span class="dot"></span><div><b>Soridata</b> <a class="ext" href="https://www.soridata.com/" target="_blank" rel="noopener" aria-label="Soridata (opens in a new tab)">↗</a><span class="use">Freely downloadable Korean music database (<a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>) — digital-chart aggregates, awards and debut dates. Derived tables we publish keep the same license.</span></div></li>
+          <li><span class="dot"></span><div><b>K-Pop Radar</b> <a class="ext" href="https://www.kpop-radar.com/" target="_blank" rel="noopener" aria-label="K-Pop Radar (opens in a new tab)">↗</a><span class="use">Monthly follower counts of official Instagram accounts, used only as growth rates (followers gained per month divided by followers already held). No follower count is shown.</span></div></li>
+          <li><span class="dot"></span><div><b>YouTube</b> <a class="ext" href="https://www.youtube.com/" target="_blank" rel="noopener" aria-label="YouTube (opens in a new tab)">↗</a><span class="use">Upload dates on official channels, used only for upload cadence (how many videos in recent months). No video, title or view count is shown.</span></div></li>
+          <li><span class="dot"></span><div><b>Brokerage research reports</b><span class="use">Yuanta, KB, Samsung and Kiwoom Securities — quoted, with attribution, in the practitioner benchmark in our findings; copyright remains with the publishers.</span></div></li>
+          <li><span class="dot"></span><div><b>Used during research, not by the current model</b><span class="use">Wikimedia pageviews (<a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0</a>), Wikidata (CC0), the K-pop Wiki at Fandom (<a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">CC BY-SA 3.0</a>), Archive of Our Own's 2021 data dump for fan statisticians, Google Trends, Ktown4u, BigKinds (Korea Press Foundation), Soompi and Douban. Nothing from these services appears on this site, and their own terms of use apply to their data.</span></div></li>
+        </ul>
+        <p>The code of this project is open source under the MIT License; our documents and findings are under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. If you maintain one of the sources above and would like your credit worded differently, or would like something removed, use the contact form and we will act on it.</p>
+
+        <h3>Get in touch</h3>
+        <p>Anonymous forms, no account needed. Corrections are the most useful thing you can send.</p>
+        <p id="contact-links"></p>
+
+        <h3>Open source</h3>
+        <p>The code (data collection, features, model, evaluation, and this site) is open source under a permissive licence: <a id="repo-link" href="#">repository</a>. The repository does <strong>not</strong> include the sales data; anyone reproducing the work collects it themselves under the sources' own terms.</p>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      Made by a fan, for fans · for entertainment only
+    </footer>
+  </div>
+
+  <script type="module" src="../js/about.js"></script>
+</body>
+</html>

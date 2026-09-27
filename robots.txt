@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /data/
+Disallow: /data-mock/
+Sitemap: https://stanstats.github.io/sitemap.xml

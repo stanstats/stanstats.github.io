@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>K-pop first-week album sales forecast (초동 예측)</title>
+  <meta name="description" content="Predicts first-week album sales (초동) of K-pop artists from what is known 120 days before release. For entertainment only. K-pop 앨범 초동 판매량 예측.">
+  <meta name="theme-color" content="#f6f3ff">
+  <!-- share card: crawlers do not run JS, so og:image stays relative until SITE_URL is set; js/util.js seoMeta() makes it absolute at runtime -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="K-pop 초동 forecast">
+  <meta property="og:title" content="K-pop 초동 forecast">
+  <meta property="og:description" content="Predicts first-week album sales (초동) of K-pop artists from what is known 120 days before release. For entertainment only.">
+  <meta property="og:image" content="https://stanstats.github.io/img/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="K-pop 초동 forecast: how many copies will the next album sell in its first week?">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="K-pop 초동 forecast">
+  <meta name="twitter:description" content="Predicts first-week album sales (초동) of K-pop artists from what is known 120 days before release. For entertainment only.">
+  <meta name="twitter:image" content="img/og.png">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23ff5fa2'/%3E%3Ccircle cx='62' cy='40' r='22' fill='%237b61ff' opacity='.8'/%3E%3C/svg%3E">
+  <!-- optional web font, non-blocking; system fonts are the fallback -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="./css/style.css">
+  <!-- fuse.js for fuzzy artist search (the site falls back to a simple matcher if this fails to load) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/7.0.0/fuse.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+  <div class="bg" aria-hidden="true"><span class="c1"></span><span class="c2"></span><span class="c3"></span><span class="t1"></span><span class="c4"></span></div>
+
+  <div class="wrap">
+    <header class="site-header">
+      <a class="brand" href="./">K-pop <em>초동</em> forecast</a>
+      <nav class="nav" aria-label="Site">
+        <a href="./">Home</a>
+        <a href="./findings/">Findings</a>
+        <a href="./about/">About</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <h1>How many copies will the next album sell in its first week?
+          <span class="kr" lang="ko">K-pop 앨범 초동 판매량 예측</span>
+        </h1>
+        <p class="tagline">Predicts first-week album sales (초동) using only what is known about 120 days before release — roughly when a label decides whether an album happens at all.</p>
+      </section>
+
+      <section class="glass card" aria-labelledby="pick-h">
+        <h2 id="pick-h">Pick an artist <span class="kr" lang="ko">아티스트 선택</span></h2>
+        <div class="field">
+          <label for="search-list">Artist</label>
+          <div id="search"></div>
+          <span class="hint">English or Korean name, nicknames work too. A random artist is picked for you.</span>
+        </div>
+
+        <form id="inputs" novalidate>
+          <div class="row">
+            <div class="field">
+              <label for="release-date">Expected release</label>
+              <input class="input" type="date" id="release-date" name="release-date" required>
+              <span class="hint">Default: 90 days from today</span>
+            </div>
+            <div class="field">
+              <label for="n-versions">Number of versions</label>
+              <input class="input" type="number" id="n-versions" name="n-versions" min="1" max="30" step="1" inputmode="numeric" required>
+              <span class="hint" id="nv-hint"></span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="album-type">Album type</label>
+            <select class="input" id="album-type" name="album-type"></select>
+            <span class="hint">Default: same as the last album</span>
+          </div>
+          <button class="btn block" type="submit" id="go">Go</button>
+        </form>
+      </section>
+
+      <section id="result" aria-live="polite"></section>
+      <section id="timeline-view" aria-live="polite"></section>
+      <section id="cloud-wrap" hidden>
+        <h2 class="tl-heading">Try another artist <span class="kr" lang="ko">다른 아티스트 골라보기</span></h2>
+        <section id="cloud" class="cloud glass" aria-label="Random artists, tap one"></section>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      For entertainment only · <a href="./about/">why this exists</a>
+    </footer>
+  </div>
+
+  <script type="module" src="./js/home.js"></script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+{
+ "model_version": "base_v11",
+ "feature_store": "fs_20260926_5bbc366",
+ "contract_hash": "02cf7a98e948a6f457bab0b74efe8325423dae32811e8f0fd74516369c8ccf09",
+ "data_cutoff": "2026-09-03",
+ "holdout_from": "2026-09-04",
+ "generated_at": "2026-09-27T14:50:06+00:00",
+ "grid_anchor_date": "2026-09-27",
+ "ig_data_through": "2026-08",
+ "yt_data_through": "2026-09",
+ "formula": "log_sales ~ log_prev + nv_change + nv_change_known + ig_pre_rate + log_gap_days + ref_week_low + ref_week_high + ref_mw_known + C(album_type) + C(prev_type)",
+ "coefficients": {
+  "Intercept": 0.70416,
+  "C(album_type)[T.repackage]": -0.27958,
+  "C(album_type)[T.single_album]": -0.11585,
+  "C(album_type)[T.studio]": 0.05938,
+  "C(prev_type)[T.repackage]": 0.33719,
+  "C(prev_type)[T.single_album]": 0.05494,
+  "C(prev_type)[T.studio]": -0.08472,
+  "log_prev": 0.95158,
+  "nv_change": 0.32495,
+  "nv_change_known": 0.006,
+  "ig_pre_rate": 0.75819,
+  "log_gap_days": -0.11166,
+  "ref_week_low": 1.18033,
+  "ref_week_high": -0.38124,
+  "ref_mw_known": -0.13996
+ },
+ "drift_correction_log10": -0.0111,
+ "n_train_rows": 1589,
+ "n_artists_with_prediction": 500,
+ "blend": {
+  "members": [
+   "ols",
+   "catboost_soft",
+   "tabpfn"
+  ],
+  "center": "(OLS + CB + TabPFN)/3",
+  "tabpfn_used": true,
+  "vs_two_member_centre": {
+   "median_abs_ratio": 1.056,
+   "p90_abs_ratio": 1.168,
+   "max_ratio": 2.588,
+   "min_ratio": 0.634,
+   "share_center_up": 0.495,
+   "n_rows": 216000
+  },
+  "catboost": {
+   "iterations": 500,
+   "depth": 4,
+   "learning_rate": 0.05,
+   "loss_function": "MAE",
+   "seeds": 5,
+   "target": "level",
+   "numeric_features": [
+    "log_prev",
+    "nv_change",
+    "nv_change_known",
+    "ig_pre_rate",
+    "log_gap_days",
+    "ref_week_low",
+    "ref_week_high",
+    "ref_mw_known",
+    "yt_pre90",
+    "yt_gapr",
+    "prev_female_share",
+    "prev_f40plus",
+    "mass_appeal",
+    "same_dev"
+   ],
+   "categorical_features": [
+    "album_type",
+    "prev_type"
+   ]
+  }
+ },
+ "interval": {
+  "method": "S: training-residual SD of the full-data production OLS, by tier of the previous album's first-week sales (log_prev); centre ± z·SD on log10 scale; z = normal quantiles for the nominal levels",
+  "z": {
+   "50": 0.674,
+   "80": 1.282,
+   "90": 1.645
+  },
+  "sd_log10_by_tier": {
+   "<5k": 0.4524,
+   "5k-50k": 0.3507,
+   "50k-500k": 0.2722,
+   ">500k": 0.1771
+  }
+ },
+ "interval_levels": [
+  50,
+  80,
+  90
+ ],
+ "tier_metrics": {
+  "<5k": {
+   "n": 178,
+   "median_err_x": 1.973,
+   "hit_50": 0.331,
+   "hit_2x": 0.506,
+   "coverage_by_level": {
+    "50": {
+     "covered": 0.483,
+     "above_upper_share": 0.275,
+     "below_lower_share": 0.242
+    },
+    "80": {
+     "covered": 0.792,
+     "above_upper_share": 0.124,
+     "below_lower_share": 0.084
+    },
+    "90": {
+     "covered": 0.876,
+     "above_upper_share": 0.067,
+     "below_lower_share": 0.056
+    }
+   },
+   "above_upper_share": 0.124,
+   "below_lower_share": 0.084
+  },
+  "5k-50k": {
+   "n": 405,
+   "median_err_x": 1.561,
+   "hit_50": 0.459,
+   "hit_2x": 0.706,
+   "coverage_by_level": {
+    "50": {
+     "covered": 0.548,
+     "above_upper_share": 0.195,
+     "below_lower_share": 0.257
+    },
+    "80": {
+     "covered": 0.78,
+     "above_upper_share": 0.086,
+     "below_lower_share": 0.133
+    },
+    "90": {
+     "covered": 0.874,
+     "above_upper_share": 0.042,
+     "below_lower_share": 0.084
+    }
+   },
+   "above_upper_share": 0.086,
+   "below_lower_share": 0.133
+  },
+  "50k-500k": {
+   "n": 423,
+   "median_err_x": 1.363,
+   "hit_50": 0.634,
+   "hit_2x": 0.842,
+   "coverage_by_level": {
+    "50": {
+     "covered": 0.558,
+     "above_upper_share": 0.163,
+     "below_lower_share": 0.279
+    },
+    "80": {
+     "covered": 0.823,
+     "above_upper_share": 0.059,
+     "below_lower_share": 0.118
+    },
+    "90": {
+     "covered": 0.891,
+     "above_upper_share": 0.021,
+     "below_lower_share": 0.087
+    }
+   },
+   "above_upper_share": 0.059,
+   "below_lower_share": 0.118
+  },
+  ">500k": {
+   "n": 135,
+   "median_err_x": 1.314,
+   "hit_50": 0.711,
+   "hit_2x": 0.941,
+   "coverage_by_level": {
+    "50": {
+     "covered": 0.467,
+     "above_upper_share": 0.333,
+     "below_lower_share": 0.2
+    },
+    "80": {
+     "covered": 0.83,
+     "above_upper_share": 0.104,
+     "below_lower_share": 0.067
+    },
+    "90": {
+     "covered": 0.904,
+     "above_upper_share": 0.052,
+     "below_lower_share": 0.044
+    }
+   },
+   "above_upper_share": 0.104,
+   "below_lower_share": 0.067
+  }
+ },
+ "overall_metrics": {
+  "n": 1141,
+  "median_err_x": 1.457,
+  "hit_50": 0.534,
+  "hit_2x": 0.753,
+  "coverage_by_level": {
+   "50": {
+    "covered": 0.532,
+    "above_upper_share": 0.212,
+    "below_lower_share": 0.256
+   },
+   "80": {
+    "covered": 0.804,
+    "above_upper_share": 0.084,
+    "below_lower_share": 0.112
+   },
+   "90": {
+    "covered": 0.884,
+    "above_upper_share": 0.039,
+    "below_lower_share": 0.076
+   }
+  },
+  "above_upper_share": 0.084,
+  "below_lower_share": 0.112
+ },
+ "warning": {
+  "threshold": 0.8,
+  "precision": 0.602,
+  "base_rate": 0.319,
+  "recall": 0.316,
+  "n_warned": 191,
+  "n": 1141,
+  "calibration": [
+   {
+    "p_range": "0-20%",
+    "n": 309,
+    "mean_predicted_pct": 12,
+    "actual_drop_pct": 11
+   },
+   {
+    "p_range": "20-30%",
+    "n": 254,
+    "mean_predicted_pct": 25,
+    "actual_drop_pct": 24
+   },
+   {
+    "p_range": "30-40%",
+    "n": 234,
+    "mean_predicted_pct": 35,
+    "actual_drop_pct": 32
+   },
+   {
+    "p_range": "40-50%",
+    "n": 153,
+    "mean_predicted_pct": 45,
+    "actual_drop_pct": 52
+   },
+   {
+    "p_range": "50-60%",
+    "n": 103,
+    "mean_predicted_pct": 55,
+    "actual_drop_pct": 54
+   },
+   {
+    "p_range": "60-70%",
+    "n": 54,
+    "mean_predicted_pct": 65,
+    "actual_drop_pct": 61
+   },
+   {
+    "p_range": "70-100%",
+    "n": 34,
+    "mean_predicted_pct": 79,
+    "actual_drop_pct": 76
+   }
+  ],
+  "note": "p_drop_pct in each grid row = Phi((log10 0.8 - log10 ratio_vs_prev) / tier SD); warn == p_drop_pct >= 50."
+ }
+}
