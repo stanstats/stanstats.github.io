@@ -3,7 +3,7 @@ import { loadIndex, loadArtist } from './data.js';
 import { mountSearch } from './search.js';
 import { timelineItem } from './timeline.js';
 import { mountCloud } from './cloud.js';
-import { latestRoster } from './roster.js';
+import { currentRoster } from './roster.js';
 import * as CFG from '../config.js';
 import { formUrl,
   el, boot, qs, setQs, weightedSample, weightedPick, fmtYm, maskedText, fmtDate, fmtPct, typeLabel, tierLabel, formLink,
@@ -89,9 +89,9 @@ async function show(id) {
 }
 
 
-/** Roster line for the artist header: names of the latest album (fallback: count). */
+/** Roster line for the artist header: current members (fallback: latest album, then count). */
 function headRoster(a) {
-  const names = latestRoster(a);
+  const names = currentRoster(a);
   const m = a.meta;
   return el('div', { class: 'roster' },
     el('span', { class: 'names' }, names.length ? names.join(' · ') : (m.n_members != null ? `${m.n_members} member${m.n_members === 1 ? '' : 's'} (names not in our database yet)` : 'not in our database yet')),

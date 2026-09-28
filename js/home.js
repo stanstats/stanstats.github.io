@@ -4,7 +4,7 @@ import { mountSearch } from './search.js';
 import { renderAxis } from './axis.js';
 import { renderTimeline } from './timeline.js';
 import { mountCloud } from './cloud.js';
-import { latestRoster } from './roster.js';
+import { currentRoster } from './roster.js';
 import * as CFG from '../config.js';
 import { formUrl,
   el, boot, qs, setQs, weightedPick, shuffle, isShowcase, fmtInt, fmtDate, fmtYm, fmtPct, pct100,
@@ -134,7 +134,7 @@ function renderCard(row, sc) {
   const warn = model.warning || {};
   const ctx = shuffle(artist.context_features || []).slice(0, 3);
   const kind = m.is_solo ? 'Solo' : m.gender === 'female' ? 'Girl group' : m.gender === 'male' ? 'Boy group' : 'Co-ed group';
-  const names = latestRoster(artist);
+  const names = currentRoster(artist);
 
   const card = el('article', { class: 'glass share-card', id: 'share-card' });
 

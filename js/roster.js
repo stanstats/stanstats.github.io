@@ -10,3 +10,12 @@ export function latestRoster(artist) {
   if (m.is_solo) return [m.name_en];
   return [];
 }
+
+// Group-level member list for the artist header and the home card (2026-09-28): meta.members_current
+// (everyone on the roster today, members on hiatus or in service included); falls back to the
+// latest album's roster when the export has no list.
+export function currentRoster(artist) {
+  const cur = (artist.meta || {}).members_current;
+  if (Array.isArray(cur) && cur.length) return cur;
+  return latestRoster(artist);
+}

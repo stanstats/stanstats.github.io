@@ -1,10 +1,10 @@
 {
  "model_version": "base_v11",
- "feature_store": "fs_20260928_e6b60fc",
+ "feature_store": "fs_20260928_806b396",
  "contract_hash": "02cf7a98e948a6f457bab0b74efe8325423dae32811e8f0fd74516369c8ccf09",
  "data_cutoff": "2026-09-03",
  "holdout_from": "2026-09-04",
- "generated_at": "2026-09-28T17:43:43+00:00",
+ "generated_at": "2026-09-28T18:31:01+00:00",
  "grid_anchor_date": "2026-09-28",
  "ig_data_through": "2026-08",
  "yt_data_through": "2026-09",
