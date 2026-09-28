@@ -9,7 +9,7 @@ import * as CFG from '../config.js';
 import { formUrl,
   el, boot, qs, setQs, weightedPick, shuffle, isShowcase, fmtInt, fmtDate, fmtYm, fmtPct, pct100,
   typeLabel, tierLabel, TYPES, toISODate, addDays, monthOffset, clamp, formLink,
-  noForecastReasons, comparisonNote, ANOMALY_WHY, ANOMALY_ABOUT,
+  noForecastReasons, comparisonNote, ANOMALY_WHY, ANOMALY_ABOUT, setArtistTitle,
 } from './util.js';
 
 boot();
@@ -65,6 +65,7 @@ async function pick(a, autoGo = false, { scroll = true } = {}) {
   result.append(el('p', { class: 'muted small' }, 'Loading…'));
   try {
     artist = await loadArtist(a.id);
+    setArtistTitle(artist.meta, '초동 예측 · next album first-week sales forecast');
   } catch (err) {
     result.innerHTML = '';
     result.append(notice('Data not available', `We do not have a data file for ${a.name_en} yet.`));

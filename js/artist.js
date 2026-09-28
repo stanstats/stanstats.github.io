@@ -7,7 +7,7 @@ import { latestRoster } from './roster.js';
 import * as CFG from '../config.js';
 import { formUrl,
   el, boot, qs, setQs, weightedSample, weightedPick, fmtYm, maskedText, fmtDate, fmtPct, typeLabel, tierLabel, formLink,
-  noForecastReasons, comparisonNote,
+  noForecastReasons, comparisonNote, setArtistTitle,
 } from './util.js';
 
 boot();
@@ -29,6 +29,13 @@ async function init() {
   index = await loadIndex();
   searchCtl = mountSearch(searchBox, index, (a) => show(a.id));
   mountCloud(cloud, index, (x) => show(x.id));
+  // A-Z list written by src/site/prerender.py: plain ?id= links; once the index is loaded, open in place without a reload.
+  $('artist-index')?.addEventListener('click', (ev) => {
+    const a = ev.target.closest('a[href^="./?id="]');
+    if (!a || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.button !== 0) return;
+    ev.preventDefault();
+    show(new URLSearchParams(a.getAttribute('href').slice(2)).get('id'));
+  });
   const id = qs('id');
   if (id) await show(id);
 }
@@ -49,6 +56,7 @@ async function show(id) {
   }
   view.innerHTML = '';
   const m = a.meta;
+  setArtistTitle(m, '앨범별 초동 기록 · album-by-album first-week sales');
 
   view.append(el('header', { class: 'glass artist-head' },
     el('h2', {}, m.name_en, el('span', { class: 'kr' }, m.name_kr || '')),

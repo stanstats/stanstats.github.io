@@ -286,6 +286,15 @@ export function seoMeta() {
   setMeta('name', 'twitter:image', img);
 }
 
+/** Per-artist document title for deep links (?id=): "NAME (한글) 초동 ..." so tabs, shares and the rendered index carry the name. */
+export function setArtistTitle(meta, suffix) {
+  if (!meta) return;
+  const kr = meta.name_kr && meta.name_kr !== meta.name_en ? ` (${meta.name_kr})` : '';
+  document.title = `${meta.name_en}${kr} ${suffix}`;
+  const d = document.head.querySelector('meta[name="description"]');
+  if (d) d.setAttribute('content', `${meta.name_en}${kr}: ${suffix}. ${d.getAttribute('content') || ''}`.slice(0, 300));
+}
+
 /** Mark the current nav link. */
 export function markNav() {
   const here = location.pathname.replace(/index\.html$/, '');

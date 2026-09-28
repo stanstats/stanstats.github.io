@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Findings · what the data says (데이터가 말해주는 것)</title>
-  <meta name="description" content="Short, numbered findings about what moves K-pop first-week album sales. 케이팝 초동에 대한 데이터 분석 결과.">
+  <title>Findings · 케이팝 초동 데이터 분석 (what the data says about K-pop first-week sales)</title>
+  <meta name="description" content="Short, numbered findings about what moves K-pop first-week album sales: versions, comeback gaps, album type, fan growth and the market. 케이팝 앨범 초동을 움직이는 요인에 대한 데이터 분석 결과: 버전 수, 공백기, 앨범 종류, 팬덤 성장, 시장 흐름.">
+  <meta name="keywords" content="케이팝 초동, 초동 예측, 초동 판매량, 앨범 초동, 컴백 초동 예상, 아이돌 앨범 판매량, 초동 순위, 첫주 판매량, K-pop first-week sales, chodong, album sales forecast, comeback prediction, K-pop data analysis">
   <meta name="theme-color" content="#f6f3ff">
   <!-- share card: crawlers do not run JS, so og:image stays relative until SITE_URL is set; js/util.js seoMeta() makes it absolute at runtime -->
   <meta property="og:type" content="website">
@@ -42,10 +43,98 @@
       <section class="hero">
         <h1>Findings <span class="kr" lang="ko">데이터가 말해주는 것</span></h1>
         <p class="tagline">What the data says about K-pop first-week sales — each card is one finding.</p>
+        <p class="tagline" lang="ko">케이팝 초동 판매량에 대해 데이터가 말해주는 것. 카드 하나가 분석 결과 하나입니다.</p>
       </section>
 
-      <section id="findings" aria-live="polite">
-        <p class="muted small">Loading…</p>
+      <section id="findings" aria-live="polite" data-prerendered="1">
+        <!-- prerender:findings start -->
+        <article class="glass finding" id="card-02-what-adding-an-album-version-does-to-fir">
+          <div class="num">+10%</div>
+          <h2>What adding an album version does to first-week sales<span class="kr">버전을 하나 더 내면 초동은 얼마나 오르나</span></h2>
+          <p class="sub">Adding versions does not raise sales in proportion — doubling the versions adds about a quarter, not double.</p>
+          <p class="body">It is true that albums with more versions sell more: albums with 2 versions sell a median 27K copies in their first week, albums with 16 or more sell close to a million. But that is a trap. Companies decide how many versions to make after looking at how popular the artist already is — a big fandom gets a big set, a small one gets two versions. So comparing albums with many versions to albums with few mostly compares popular artists to less popular ones, and tells you nothing about what the versions themselves do. The fair test is to follow one artist and see what changes when their version count changes. Done that way, the effect is real but small. Say the last album had 3 versions. Make this one 4 and first-week sales come out about 10% higher; make it 5 and about 18% higher; make it 6 — double the last one — and about 25% higher, not double. The table gives the same for other starting points; the fewer versions you started with, the more each extra one is worth, and cutting versions costs about the same in reverse. Put the other way round: if the last album had 3 versions and this one has 5, roughly 15% of this album&#x27;s first week can be credited to the two extra versions — the rest would have sold anyway. This is a correlation, not a cause: a company that expects a strong comeback may also add versions. Not a causal claim.</p>
+          <div class="table-wrap">
+            <table class="mini">
+              <thead><tr><th>Versions last time</th><th>+1 version</th><th>+2 versions</th><th>+3 versions</th><th>−1 version</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>+25%</td><td>+42%</td><td>+56%</td><td>—</td></tr>
+                <tr><td>2</td><td>+14%</td><td>+25%</td><td>+34%</td><td>−20%</td></tr>
+                <tr><td>3</td><td>+10%</td><td>+18%</td><td>+25%</td><td>−12%</td></tr>
+                <tr><td>4</td><td>+7%</td><td>+14%</td><td>+20%</td><td>−9%</td></tr>
+                <tr><td>5</td><td>+6%</td><td>+11%</td><td>+16%</td><td>−7%</td></tr>
+                <tr><td>6</td><td>+5%</td><td>+10%</td><td>+14%</td><td>−6%</td></tr>
+              </tbody>
+            </table>
+            <p class="muted small">Other things equal; averages across artists of all sizes.</p>
+          </div>
+        </article>
+        <article class="glass finding" id="card-04-the-last-album-already-tells-you-most-of">
+          <div class="num">79%</div>
+          <h2>The last album already tells you most of the next one<span class="kr">전작 초동이 다음 앨범의 대부분을 말해준다</span></h2>
+          <p class="sub">Know one number — last comeback&#x27;s first week — and you know most of what can be known.</p>
+          <p class="body">If you know only one thing about an artist — how many copies their previous comeback sold in its first week — you already know most of what the next one will do: that single number accounts for about 79% of the differences between albums. Everything else we could gather on top of it — album type, how many versions, how the fandom has been growing, how long the break was, where the artist came from — adds only a few more points, taking it to about 85%. Not a causal claim.</p>
+        </article>
+        <article class="glass finding" id="card-05-the-whole-market-swings-year-to-year">
+          <div class="num">+39% → 0%</div>
+          <h2>The whole market swings year to year<span class="kr">판 전체는 해마다 출렁인다</span></h2>
+          <p class="sub">From one year to the next, the typical comeback&#x27;s growth over its predecessor has moved by up to 22 points: about +30% a year in 2019–2022, +10% in 2023, flat since 2024.</p>
+          <p class="body">K-pop album sales don&#x27;t just move artist by artist; the whole market moves together, and the swing is large. From 2019 to 2022 a typical comeback sold 27% to 39% more than the same artist&#x27;s previous album; in 2023 that fell to +10%, and in 2024 to 2026 the typical comeback has been flat (×1.00, ×0.98, ×1.02). Total sales tell the same story from the top: a record 119 million copies in 2023, then −17% in 2024, the first decline in ten years. For a forecast made months ahead this matters: when the market turns, every album misses in the same direction by roughly 15%, and no information about an individual artist warns you in advance. Three years show the pattern. 2020: concerts stopped, fan spending moved into albums, and the typical comeback jumped 39% over its predecessor. 2023: the total hit its all-time high on the strength of a few huge groups, while the typical album grew only 10% — the market was already cooling underneath the headline. 2024: the total fell 17% as overseas group-buying pulled back, and the typical comeback stopped growing at all. Not a causal claim.</p>
+        </article>
+        <article class="glass finding" id="card-07-the-longer-the-silence-the-smaller-the-f">
+          <div class="num">−6%</div>
+          <h2>The longer the silence, the smaller the first week<span class="kr">공백이 길수록 초동은 줄어든다</span></h2>
+          <p class="sub">The typical comeback arrives about eight and a half months after the previous album. Wait a year or two instead and the first week is about 6% smaller; wait four years or more and it is about 13% smaller.</p>
+          <p class="body">Half of all comebacks in our data arrive within eight and a half months of the previous album, and the most common band is six to twelve months. We take that band as the zero point: what an album of the same artist size, the same type, the same change in versions and the same recent Instagram growth would sell if it came back six to twelve months after the last one. Measured against that zero, coming back within six months sells about 5% more (416 albums), waiting one to two years sells about 6% less (315), two to four years about 8% less (160), and four years or more about 13% less (64). Read the raw numbers without that adjustment and a long silence looks harmless, even good: albums four or more years after the last one sell 1.35 times the previous album at the median. That is a trick of who gets to come back. Comebacks after military service, and acts a company still believed in after a long break, are the ones we see; the acts that stopped selling simply never released again. Not a causal claim.</p>
+        </article>
+        <article class="glass finding" id="card-09-k-pop-albums-became-a-fan-only-market-th">
+          <div class="num">26% → 84%</div>
+          <h2>K-pop albums became a fan-only market: the first week went from a quarter to over 80% of total sales<span class="kr">초동이 누적의 80%를 넘어선 시장</span></h2>
+          <p class="sub">In 2015 the first week was about a quarter of an album&#x27;s Korean sales. In 2025 it was 84%, and 2026 so far is higher still.</p>
+          <p class="body">Add up all first-week sales in our data and divide by the cumulative Korean sales of the same albums: about 26% in 2015, 44% in 2019, 62% in 2022, 84% in 2025. Almost nothing sells after week one any more. The shift is strongest for mid-size and big acts, whose first week is now over 90% of the total, and weakest for the smallest acts, at about half — their albums still trickle out to the general public afterwards. Part of it is how the market is now organised: fan-sign events are allocated through pre-orders, so a large share of what a fandom will ever spend on an album is committed before release and lands in the first week. The demand that used to be released gradually over the following months is now pulled forward into week one, and cumulative sales stop growing after it. Three other series move the same way: the first day&#x27;s share of the first week rose from 23% (2016) to about 46% (2022–2026); the median number of versions per album went from 1 to 4; the median price rose from 12,600 to 19,300 won. The market&#x27;s growth was not new listeners buying CDs — it was existing fans buying more copies, more versions, earlier. That is why a fan-base model works, and why cumulative sales stopped being an interesting target. Not a causal claim.</p>
+        </article>
+        <article class="glass finding" id="card-10-the-typical-fan-stays-for-about-three-ye">
+          <div class="num">about 3 years</div>
+          <h2>The typical fan stays for about three years<span class="kr">팬 생애주기 약 3년</span></h2>
+          <p class="sub">Every comeback wins a new group of fans, and each group&#x27;s support tapers on the albums that follow. The fan life cycle that best fits the data: half of a group is gone after roughly two years.</p>
+          <p class="body">Think of every comeback as winning a new group of fans. Each group supports the album that won them the most, and a little less on each album after that, as some of them drift away. An artist&#x27;s first-week sales are what all these groups — the newest and the older ones — are still putting in, stacked together. We asked the data how fast a group fades, and the answer is about half every two years, which means the typical fan stays for about three years. Three things follow. Sales rise only while each new group outweighs the fading of the older ones. Once new groups get small, sales fall even though nothing went wrong, roughly halving every two years. And an act whose sales hold steady for years is not keeping the same fans; it is replacing the ones who leave at about the rate they leave. That fits what fans say about themselves (two to three years), and it fits the supply side: the average Korean idol group is active for about four years, and almost half are gone within three. This is an average, not a rule for any one fan — some stay a decade, many leave within a year. Not a causal claim.</p>
+        </article>
+        <article class="glass finding" id="card-13-how-album-type-affects-first-week-sales">
+          <div class="num">+15% / −28% / −47%</div>
+          <h2>How album type affects first-week sales<span class="kr">앨범 유형이 초동에 미치는 영향</span></h2>
+          <p class="sub">Compared with a mini album by the same artist, a full album sells about 15% more, a single album about 28% less, and a repackage about half.</p>
+          <p class="body">Half of the artists in our data have never released a full album, so the mini album is the natural yardstick. To keep rising and falling artists on an equal footing, we compared each full album with the mini album just before it and the mini album just after it. A full album typically sells about 10–20% more than those two minis, and it beat them in 65% of cases. Our forecast uses the same yardstick: once an artist&#x27;s size, fan growth and gap are accounted for, a full album comes in about 15% above a mini album, a single album about 28% below, and a repackage about 47% below. The full-album bump is not the same for everyone. For mid-sized artists, whose last album sold between 5,000 and 500,000 copies, it is about 20–35%; for the very smallest and the very biggest artists it cannot be told apart from zero, partly because they release few full albums. Girl groups show a larger full-album bump, about 35%, than boy groups, about 18%. A single album sells 20–40% less than a mini at every size. A repackage is the same album issued again with a few new songs about ten weeks later; it typically sells 56% of the original. This describes what happened; it does not mean that choosing one type causes the difference. Not a causal claim.</p>
+        </article>
+        <article class="glass finding" id="card-14-a-drop-in-sales-is-a-one-off-not-a-trend">
+          <div class="num">23% vs 25%</div>
+          <h2>A drop in sales is a one-off, not a trend<span class="kr">초동 하락은 한 번의 사건이지 추세가 아니다</span></h2>
+          <p class="sub">After an album falls by more than 20%, the chance that the next one falls again is 23%, about the same as for any album (25%). The lost ground usually stays lost, but the slide does not continue.</p>
+          <p class="body">When an album sells clearly less than the one before, it is tempting to draw a line through the two points and expect every future comeback to fall by the same amount. The data does not support that. We looked at 1,663 comebacks where we knew whether the previous album had risen or fallen. After an album fell by more than 20%, the next album fell by more than 20% again in 23% of cases, went roughly flat in 25% and rose by more than 25% in 53%. That is the same spread as after any album: across all comebacks, 25% fall by more than 20%. The same holds for boy groups, girl groups and soloists, for big and small artists, and for new and long-running acts. Even after two drops in a row, the third album rose more often than it fell. What a drop does do is move the starting point. After a fall of 20–40%, the next album typically sells about the same as the album that fell, so the lost ground usually stays lost. So read a bad first week as a step down to a new level, not as the first step of a staircase. One caution: artists whose sales fall very hard sometimes never release the next album, so we can only see the ones who came back. Not a causal claim.</p>
+        </article>
+        <article class="glass finding" id="card-17-boy-group-fans-stay-longer-solo-fans-com">
+          <div class="num">80% / 75% / 60%</div>
+          <h2>Boy-group fans stay longer; solo fans come and go<span class="kr">보이그룹 팬은 오래 남고, 솔로 팬은 왔다 간다</span></h2>
+          <p class="sub">A boy group keeps at least 80% of its previous first week 80% of the time, a girl group 75% of the time, and a soloist about 60% of the time.</p>
+          <p class="body">Fans often say that boy-group fans stay longer and girl-group fans move on faster, and the sales bear that out, though the gap is modest. Take every album and ask whether the next one kept at least 80% of its first-week sales. For boy groups the answer is yes 80% of the time, for girl groups 75% of the time. Two albums on, boy groups are still holding that level 82% of the time and girl groups 73% of the time. Soloists do worse. A soloist&#x27;s next album keeps at least 80% of the previous one only about 60% of the time, and two albums on a male soloist is holding the level only about half the time. Female soloists swing the most: 42% of their albums either double or halve compared with the last one. So a soloist&#x27;s big album is more often a one-off, and a boy group&#x27;s big album is more often a new floor. These are descriptions of what happened, not causes. Not a causal claim.</p>
+        </article>
+        <article class="glass finding" id="card-19-release-weekday-does-not-affect-first-we">
+          <div class="num">0</div>
+          <h2>Release weekday does not affect first-week sales; it affects which charts an album lands on<span class="kr">발매 요일은 초동에 영향이 없다, 영향을 받는 것은 다른 차트다</span></h2>
+          <p class="sub">Albums released on any weekday sell about the same relative to the artist&#x27;s last album. The weekday matters for weekly charts that close on a fixed day, not for the seven-day first-week count.</p>
+          <p class="body">Comebacks released on a Monday, Tuesday, Wednesday, Thursday or Friday sold between 1.15 and 1.26 times the artist&#x27;s previous album on median, with no order to the days, and the differences sit inside normal noise. Adding the weekday to our forecast does not make it any better. The reason is simple: the first week is a rolling seven-day window that starts on the release day, so every album gets its full seven days. The weekday does matter for charts that close on a fixed day of the week: an album released late in a chart week has only a few days counted before that chart closes, so its first chart position can look weaker even though its first-week total is unaffected. Weekend releases are too rare in our data to say anything about them. Not a causal claim.</p>
+        </article>
+        <article class="glass finding" id="card-20-follower-count-tells-you-how-big-an-arti">
+          <div class="num">×1.34 vs ×1.00</div>
+          <h2>Follower count tells you how big an artist is; follower growth tells you where they are going<span class="kr">팔로워 수는 크기를, 팔로워 증가 속도는 방향을 말해준다</span></h2>
+          <p class="sub">Without sales history, follower count is the single most useful number. Once you know the last album, it adds nothing, but how fast the fanbase grew during the gap still does: the fastest-growing quarter sells 1.34 times the last album, the slowest quarter 1.00.</p>
+          <p class="body">We track each artist&#x27;s Instagram followers monthly. The number of followers is a good measure of how big an artist is: when we do not know an artist&#x27;s previous sales, adding follower count is the single biggest improvement we can make, and an artist with ten times the followers sells about five times as many copies. But the previous album already measures size, and measures it better. Once the last album is in the picture, follower count adds nothing. What still adds something is how fast the fanbase is growing, measured as followers gained per month divided by followers already held. Among the 1,240 comebacks with this data, the quarter of artists whose followers grew slowest during the gap sold a median 1.00 times their previous album and half of them rose. The quarter that grew fastest sold 1.34 times, and three in four rose. That signal survives everything else we know: with the last album, album type, versions and gap already accounted for, the fastest-growing quarter still comes in about 17% above what we would otherwise expect. This is predictive, not causal: growth and sales share their causes. Not a causal claim.</p>
+        </article>
+        <article class="glass finding" id="card-22-messy-data-is-not-why-forecasts-miss-sou">
+          <div class="num">3%</div>
+          <h2>Messy data is not why forecasts miss: source disagreement is 3% of the error<span class="kr">집계 차이는 오차의 3%뿐, 나머지는 진짜 수요 변동</span></h2>
+          <p class="sub">We checked first-week figures against multiple sources. Where sources disagree, they differ by about 13%. Our forecast error is far larger, so almost all of it is real variation in what fans did.</p>
+          <p class="body">A fair objection to any sales model is that the numbers themselves are unreliable. We can measure how unreliable they are. We verified first-week sales figures against multiple sources wherever we could. Where sources disagree on an album&#x27;s first week, the figures differ by a typical 13%. Our forecast misses by a typical 46%. Put on the same scale, the disagreement between sources accounts for about 3% of our error. The first week is a clean target: one week, one counting rule. The other 97% of what we get wrong is genuine album-to-album variation in what fans did, which is also why two near-identical albums by the same artist differ by about 36% for no visible reason. Not a causal claim.</p>
+        </article>
+        <!-- prerender:findings end -->
       </section>
     </main>
 

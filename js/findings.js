@@ -6,7 +6,8 @@ import { el, boot } from './util.js';
 boot();
 const root = document.getElementById('findings');
 
-loadFindings().then((items) => {
+// src/site/prerender.py writes the cards into the HTML (for crawlers without JS) and marks the section; nothing to do then.
+if (root.dataset.prerendered !== '1') loadFindings().then((items) => {
   root.innerHTML = '';
   if (!items.length) { root.append(el('p', { class: 'muted' }, 'No findings published yet.')); return; }
   for (const f of items) {
