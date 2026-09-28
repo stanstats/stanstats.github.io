@@ -1,5 +1,5 @@
 // Album timeline item shared by the Home page (below the forecast) and the Artists page.
-import { formUrl, el, fmtYm, maskedText, fmtPct, typeLabel, formLink } from './util.js';
+import { formUrl, el, fmtYm, maskedText, fmtPct, typeLabel, formLink, anomalyNote } from './util.js';
 
 export function timelineItem(t) {
   // Three cases, kept apart on purpose: no previous album in our database (change is null) -> 'first';
@@ -47,6 +47,12 @@ export function timelineItem(t) {
       }
     }
     card.append(ul);
+    // Albums before the training window, explained with today's coefficients (export flag; owner ruling 2026-09-27)
+    if (t.explained_out_of_window && t.explain_note) card.append(el('p', { class: 'tl-note' }, t.explain_note));
+  } else if (anomalyNote(t)) {
+    // first-week figure judged a sales-data anomaly (export forecast_status; owner ruling 2026-09-25): say so instead of
+    // the generic "too early" line, which is wrong for these albums
+    card.append(anomalyNote(t));
   } else {
     card.append(el('p', { class: 'tl-none' }, 'Too early in the run to explain.'));
   }

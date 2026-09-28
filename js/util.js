@@ -79,6 +79,68 @@ export function monthOffset(dateStr, lo = 1, hi = 12, base = null) {
 
 export const clamp = (x, lo, hi) => Math.min(hi, Math.max(lo, x));
 
+/** Artists the site may put in front of a visitor on its own (word cloud, random default on Home): a forecast must
+ *  exist and at least 3 albums on the timeline must carry an explanation (n_attributed = albums with non-empty reasons).
+ *  Owner decision 2026-09-27 (replaces "at least 3 albums of history", 2026-09-26): the timeline should show at least
+ *  three explained albums before we push an artist at visitors. The search box is NOT filtered by this; every artist
+ *  stays reachable there. */
+export const SHOWCASE_MIN_ATTRIBUTED = 3;
+export function isShowcase(a) {
+  return !!a.has_prediction && (a.n_attributed || 0) >= SHOWCASE_MIN_ATTRIBUTED;
+}
+
+/** Sales-data anomaly flags written by src/site/export.py (owner ruling 2026-09-25; surfaced on the site 2026-09-28).
+ *  A timeline album whose first-week figure is judged a channel under-count (first week below 0.3 x the release year's
+ *  usual ratio to the monthly chart, src/model/clock.py _coverage_flags) carries forecast_status 'sales_data_anomaly'
+ *  and forecast_note ("Sales data anomaly: no forecast possible"); it has no reasons and is never a reference album.
+ *  A forecast artist whose latest album(s) are flagged carries a top-level forecast_note ("Change is compared with X
+ *  (ym); the latest album Y (ym) is excluded: sales data anomaly.") plus comparison_album. The artist meta carries no
+ *  status. 'sales_data_anomaly' is the only status value the export writes today. */
+export const ANOMALY_STATUS = 'sales_data_anomaly';
+export const ANOMALY_WHY = 'The first-week figure we hold is far below what the official monthly chart shows for the same album, which usually means some sales channels were not counted.';
+export const ANOMALY_ABOUT = new URL('../about/#no-forecast', import.meta.url).href;
+export const TRAIN_FROM_YEAR = 2019;   // configs/eval_clock.yaml train_from; not in model.json, keep in step by hand
+export const isAnomaly = (t) => !!t && t.forecast_status === ANOMALY_STATUS;
+const withStop = (s) => String(s).trim().replace(/\.?$/, '.');
+
+/** Note for a flagged timeline album (null for every other album). */
+export function anomalyNote(t) {
+  if (!isAnomaly(t)) return null;
+  return el('p', { class: 'anomaly-note' },
+    el('b', {}, withStop(t.forecast_note || 'Sales data anomaly: no forecast possible')), ' ', ANOMALY_WHY, ' ',
+    el('a', { href: ANOMALY_ABOUT }, 'How we spot this'));
+}
+
+/** Note for a forecast artist whose latest album is flagged (top-level forecast_note), or null. */
+export function comparisonNote(a) {
+  if (!a || !a.forecast_note) return null;
+  return el('p', { class: 'anomaly-note' }, withStop(a.forecast_note), ' ', el('a', { href: ANOMALY_ABOUT }, 'Why'));
+}
+
+/** Plain-English reasons why an artist has no forecast, read from its timeline: flagged albums, and a last trustworthy
+ *  album released before the training window. Returns { sentences: [...], flagged: [...] }. */
+export function noForecastReasons(a) {
+  const tl = (a && a.timeline) || [];
+  const flagged = tl.filter(isAnomaly);
+  const clean = tl.filter((t) => !isAnomaly(t));
+  const last = clean.length ? clean[clean.length - 1] : null;
+  const name = (t) => `${t.title} (${fmtYm(t.release_ym)})`;
+  const sentences = [];
+  if (last && Number(String(last.release_ym).slice(0, 4)) < TRAIN_FROM_YEAR) {
+    sentences.push(`The last album with a trustworthy first-week figure, ${name(last)}, came out before ${TRAIN_FROM_YEAR}, when our training data starts.`);
+  }
+  if (flagged.length) {
+    const list = flagged.map(name).join(', ');
+    sentences.push(clean.length
+      ? `The first-week figure of ${list} is a sales data anomaly, so ${flagged.length === 1 ? 'it' : 'they'} cannot anchor a forecast${sentences.length ? ' either' : ''}.`
+      : `Every first-week figure we hold for this act (${flagged.map((t) => `${t.title}, ${fmtYm(t.release_ym)}`).join('; ')}) is a sales data anomaly, so there is nothing to anchor a forecast on.`);
+  }
+  if (!sentences.length) {
+    sentences.push(`Either its last album with usable first-week sales came out before ${TRAIN_FROM_YEAR}, when our training data starts, or every first-week figure we hold for it looks like a data anomaly.`);
+  }
+  return { sentences, flagged };
+}
+
 /** Weighted random pick; weights default to popularity_weight. */
 export function weightedPick(items, weightOf = (a) => a.popularity_weight || 0.01) {
   let total = 0;

@@ -50,7 +50,7 @@
         <p>So I tried to build a forecasting model from public data. I am a fan with some statistics, not an industry insider, and the model is a modest thing: it looks at what an artist has already done and gives a range for the next album.</p>
         <p>K-pop is an art about people and feelings. Data does not replace that, and I don't want it to. The data is full of idols and fans who went far past anything a model expected, and those are my favourite rows.</p>
         <p>The model gives a deliberately wide range, not a single number, and it is wrong often. Every card says so. Please treat it as a reference and nothing more.</p>
-        <p>This is a hobby: open source, non-profit, nobody pays for it and nobody is selling anything.</p>
+        <p>This is a hobby: non-profit, nobody pays for it and nobody is selling anything.</p>
 
         <h3>About the clock</h3>
         <p>The model only uses what is knowable about <strong>120 days before release</strong>, which is roughly when the "do we make this album?" decision happens. What it forecasts is the <strong>first-week sales figure (초동)</strong>, the number the industry actually judges a comeback by.</p>
@@ -59,12 +59,17 @@
         <p>Every forecast card shows one number and three purple bands.</p>
         <p><strong>The number</strong> is our middle guess for the artist's next album in first-week copies. Half of the time the real number would be above this, half below.</p>
         <p><strong>The three purple bands</strong> are how sure we are: there is a 50% chance the real first week lands inside the darkest band, an 80% chance it lands inside the middle band, and a 90% chance it lands inside the widest one. Tap the ⓘ next to "Likely between" on any card to see these bands spelled out with that artist's numbers.</p>
-        <p><strong>How do we know?</strong> We tested the model on past albums, grouped by how big the artist's previous album was. Our guess was typically off by the "typical miss" below either way, and a share of the time it was off by more than double. Those past misses are what set the width of the bands:</p>
+        <p><strong>What the model learns from.</strong> The model is fitted only on albums released from 2019 onward. Older albums still count as an artist's "previous album", but the model is not trained on them, because before 2019 we have no record of how fast an artist's Instagram following was growing, one of the signals the forecast relies on.</p>
+        <p><strong>How do we know?</strong> We tested the model the way it is used: for each year from <span id="oos-from">2022</span> to <span id="oos-to">2026</span>, we fitted it only on albums released before that year and then forecast that year's albums, so it never saw the answer. The <span id="oos-to-2">2026</span> test runs to <span id="oos-until">3 Sep 2026</span>, where our data ends. That makes <span id="oos-n">1,140</span> tested albums, grouped below by how big the artist's previous album was. Our guess was typically off by the "typical miss" below either way, and a share of the time it was off by more than double. Those past misses are what set the width of the bands:</p>
         <table class="tiers" id="tier-table" aria-label="Historical misses by artist size">
           <thead><tr><th>Previous album</th><th>Albums tested</th><th>Typical miss</th><th>Off by more than 2×</th></tr></thead>
           <tbody></tbody>
         </table>
         <p><strong>The bands are wider on the upside</strong> because album sales move in multiples, not in fixed amounts — a jump to the top of the band and a drop to the bottom are the same size in percentage terms.</p>
+
+        <h3 id="no-forecast">When we give no forecast</h3>
+        <p>Sometimes the first-week figure we hold for an album is too low to be real. We check it against the official monthly chart for the same album: in any given year the two figures keep a fairly steady ratio, and when an album's first week comes in below 30% of that year's usual ratio, some sales channels were almost certainly not counted. We call that a <strong>sales data anomaly</strong>. Such an album gets no forecast and no explanation on its timeline, it is not among the tested albums above, and it is never used as the "last album" a forecast is compared with. When it is an artist's latest album, the forecast card says which earlier album it is compared with instead.</p>
+        <p>An artist gets no forecast at all when every first-week figure we hold for them is a sales data anomaly, or when their last album with a trustworthy first-week figure came out before 2019, when the training data starts.</p>
 
         <h3>Data</h3>
         <p>Data as of <strong id="data-cutoff">…</strong><span id="model-version" class="muted"></span>.</p>
@@ -72,7 +77,7 @@
 
         <h3 id="credits">Data &amp; credits</h3>
         <p>This site is a hobby research project; it is not affiliated with, endorsed by, or sponsored by any chart, retailer, platform or company named below.</p>
-        <p>The forecasts are produced by a model trained on an <strong>internal dataset of physical album sales, compiled from public sales summaries and charts</strong>. It is not published here or in the code repository, and it is not shown on this site in raw form. Everything you see — the predicted range, the percentage changes, the tiers, the masked figures such as 14,*** — is derived from it and rounded so that no underlying sales figure can be recovered.</p>        <p>The explanatory signals the model looks at come mainly from these sources, and we are grateful to the people who maintain them:</p>
+        <p>The forecasts are produced by a model trained on an <strong>internal dataset of physical album sales, compiled from public sales summaries and charts</strong>. It is not published here or anywhere else, and it is not shown on this site in raw form. Everything you see — the predicted range, the percentage changes, the tiers, the masked figures such as 14,*** — is derived from it and rounded so that no underlying sales figure can be recovered.</p>        <p>The explanatory signals the model looks at come mainly from these sources, and we are grateful to the people who maintain them:</p>
         <ul class="credits">
           <li><span class="dot"></span><div><b>Wikipedia</b> <a class="ext" href="https://www.wikipedia.org/" target="_blank" rel="noopener" aria-label="Wikipedia (opens in a new tab)">↗</a><span class="use">English, Korean and Japanese editions — artist facts, rosters, debut dates, military service and album metadata. Text available under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.</span></div></li>
           <li><span class="dot"></span><div><b>Korean Sales</b> <a class="ext" href="https://koreansalestwt.blogspot.com/" target="_blank" rel="noopener" aria-label="Korean Sales blog (opens in a new tab)">↗</a><span class="use">A fan-maintained blog of per-artist album sales summaries (koreansalestwt.blogspot.com). It is the main public source the internal sales dataset was compiled from, and it also supplies album metadata such as release format and label. No sales figure from it is reproduced on this site.</span></div></li>
@@ -82,14 +87,14 @@
           <li><span class="dot"></span><div><b>Brokerage research reports</b><span class="use">Yuanta, KB, Samsung and Kiwoom Securities — quoted, with attribution, in the practitioner benchmark in our findings; copyright remains with the publishers.</span></div></li>
           <li><span class="dot"></span><div><b>Used during research, not by the current model</b><span class="use">Wikimedia pageviews (<a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0</a>), Wikidata (CC0), the K-pop Wiki at Fandom (<a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">CC BY-SA 3.0</a>), Archive of Our Own's 2021 data dump for fan statisticians, Google Trends, Ktown4u, BigKinds (Korea Press Foundation), Soompi and Douban. Nothing from these services appears on this site, and their own terms of use apply to their data.</span></div></li>
         </ul>
-        <p>The code of this project is open source under the MIT License; our documents and findings are under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. If you maintain one of the sources above and would like your credit worded differently, or would like something removed, use the contact form and we will act on it.</p>
+        <p>Our findings and the explanations on this site are under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. If you maintain one of the sources above and would like your credit worded differently, or would like something removed, use the contact form and we will act on it.</p>
 
         <h3>Get in touch</h3>
         <p>Anonymous forms, no account needed. Corrections are the most useful thing you can send.</p>
         <p id="contact-links"></p>
 
-        <h3>Open source</h3>
-        <p>The code (data collection, features, model, evaluation, and this site) is open source under a permissive licence: <a id="repo-link" href="#">repository</a>. The repository does <strong>not</strong> include the sales data; anyone reproducing the work collects it themselves under the sources' own terms.</p>
+        <h3>Methods and code</h3>
+        <p>The code behind the forecasts (data collection, features, model and evaluation) is private. The methods, the data sources and the limits of the model are described on this page, and the sales data is not published anywhere.</p>
       </article>
     </main>
 

@@ -1,14 +1,15 @@
 // Floating word cloud of artists (shared by Home and the legacy Artists page).
-import { el, weightedSample, weightedPick } from './util.js';
+import { el, weightedSample, weightedPick, isShowcase } from './util.js';
 
 const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const POOL_TARGET = 30;
 
 /** Mount the cloud into `cloud`; `onPick(artistRow)` is called when a name is tapped (falls back to the href). */
 export function mountCloud(cloud, fullIndex, onPick) {
-  // Only artists we can forecast, with at least 3 albums of history (user 2026-09-26: a cold-start act like
-  // wave to earth must not float past as if it had a forecast).
-  const index = fullIndex.filter((a) => a.has_prediction && (a.n_albums || 0) >= 3);
+  // Only artists we can forecast, with at least 3 explained albums on the timeline (isShowcase, owner decision
+  // 2026-09-27; before that: at least 3 albums of history, 2026-09-26 -- a cold-start act like wave to earth must not
+  // float past as if it had a forecast). Same rule as the random default on Home.
+  const index = fullIndex.filter(isShowcase);
   function renderCloud() {
   cloud.innerHTML = '';
   const nLanes = window.innerWidth >= 620 ? 4 : 3;

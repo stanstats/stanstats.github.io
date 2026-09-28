@@ -319,6 +319,7 @@ p { margin: 0.4rem 0; }
 .tl-reasons .pct.pos { color: var(--up); }
 .tl-reasons .pct.neg { color: var(--down); }
 .tl-none { margin: 8px 0 0; font-size: 0.78rem; color: var(--ink-3); font-style: italic; }
+.tl-note { margin: 6px 0 0; font-size: 0.72rem; line-height: 1.35; color: var(--ink-3); }
 .roster { margin-top: 8px; font-size: 0.78rem; color: var(--ink-2); }
 .roster .names { color: var(--ink); }
 .roster .note { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 4px; color: var(--ink-3); font-size: 0.72rem; }
@@ -383,3 +384,7 @@ table.mini td:first-child,table.mini th:first-child{text-align:left}
 .sc-origin { font-size: 0.82rem; color: var(--ink-2); margin: 6px 0 0; font-weight: 600; }
 .tl-reasons .pct.base { color: var(--ink-2); font-weight: 700; }
 .ctx-note { font-size: 0.72rem; color: var(--ink-3); margin: 8px 0 0; line-height: 1.45; }
+/* sales-data anomaly note (export forecast_status / forecast_note, 2026-09-28): same amber as .sc-stale */
+.anomaly-note { margin: 8px 0 0; padding: 6px 9px; border-radius: 9px; font-size: 0.76rem; line-height: 1.45; color: #8a4b00; background: rgba(255, 196, 80, 0.18); }
+.anomaly-note b { color: #6b3a00; }
+.anomaly-note a { color: inherit; text-decoration: underline; }

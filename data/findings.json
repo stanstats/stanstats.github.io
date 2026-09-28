@@ -43,7 +43,7 @@
   "subtitle_en": "In 2015 the first week was about a quarter of an album's Korean sales. In 2025 it was 84%, and 2026 so far is higher still.",
   "number": "26% → 84%",
   "body_en": "Add up all first-week sales in our data and divide by the cumulative Korean sales of the same albums: about 26% in 2015, 44% in 2019, 62% in 2022, 84% in 2025. Almost nothing sells after week one any more. The shift is strongest for mid-size and big acts, whose first week is now over 90% of the total, and weakest for the smallest acts, at about half — their albums still trickle out to the general public afterwards. Part of it is how the market is now organised: fan-sign events are allocated through pre-orders, so a large share of what a fandom will ever spend on an album is committed before release and lands in the first week. The demand that used to be released gradually over the following months is now pulled forward into week one, and cumulative sales stop growing after it. Three other series move the same way: the first day's share of the first week rose from 23% (2016) to about 46% (2022–2026); the median number of versions per album went from 1 to 4; the median price rose from 12,600 to 19,300 won. The market's growth was not new listeners buying CDs — it was existing fans buying more copies, more versions, earlier. That is why a fan-base model works, and why cumulative sales stopped being an interesting target. Not a causal claim.",
-  "link": "docs/PROJECT_STATUS.md"
+  "link": "docs/archive/PROJECT_STATUS.md"
  },
  {
   "id": "card-10-the-typical-fan-stays-for-about-three-ye",
@@ -52,7 +52,7 @@
   "subtitle_en": "Every comeback wins a new group of fans, and each group's support tapers on the albums that follow. The fan life cycle that best fits the data: half of a group is gone after roughly two years.",
   "number": "about 3 years",
   "body_en": "Think of every comeback as winning a new group of fans. Each group supports the album that won them the most, and a little less on each album after that, as some of them drift away. An artist's first-week sales are what all these groups — the newest and the older ones — are still putting in, stacked together. We asked the data how fast a group fades, and the answer is about half every two years, which means the typical fan stays for about three years. Three things follow. Sales rise only while each new group outweighs the fading of the older ones. Once new groups get small, sales fall even though nothing went wrong, roughly halving every two years. And an act whose sales hold steady for years is not keeping the same fans; it is replacing the ones who leave at about the rate they leave. That fits what fans say about themselves (two to three years), and it fits the supply side: the average Korean idol group is active for about four years, and almost half are gone within three. This is an average, not a rule for any one fan — some stay a decade, many leave within a year. Not a causal claim.",
-  "link": "docs/FAN_LIFECYCLE.md"
+  "link": "docs/research/FAN_LIFECYCLE.md"
  },
  {
   "id": "card-13-how-album-type-affects-first-week-sales",

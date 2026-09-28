@@ -7,8 +7,9 @@ import { mountCloud } from './cloud.js';
 import { latestRoster } from './roster.js';
 import * as CFG from '../config.js';
 import { formUrl,
-  el, boot, qs, setQs, weightedPick, shuffle, fmtInt, fmtDate, fmtYm, fmtPct, pct100,
+  el, boot, qs, setQs, weightedPick, shuffle, isShowcase, fmtInt, fmtDate, fmtYm, fmtPct, pct100,
   typeLabel, tierLabel, TYPES, toISODate, addDays, monthOffset, clamp, formLink,
+  noForecastReasons, comparisonNote, ANOMALY_WHY, ANOMALY_ABOUT,
 } from './util.js';
 
 boot();
@@ -43,18 +44,21 @@ async function init() {
   dateIn.value = toISODate(dflt > maxDate ? maxDate : dflt);
 
   const wanted = qs('id') && index.find((a) => a.id === qs('id'));
-  // Random default: only well-known artists (user decision 2026-09-13, line drawn at Super Junior's latest album,
-  // popularity_weight 0.83 = about 300K first-week copies; 61 artists qualify).
+  // Random default: the same showcase rule as the word cloud (forecast exists AND >= 3 explained albums on the
+  // timeline, isShowcase; owner decision 2026-09-27), narrowed further to well-known artists (user decision 2026-09-13, line drawn at Super Junior's
+  // latest album, popularity_weight 0.83 = about 300K first-week copies).
   const RANDOM_MIN_WEIGHT = 0.83;
-  const candidates = index.filter((a) => a.has_prediction && (a.popularity_weight || 0) >= RANDOM_MIN_WEIGHT);
-  await pick(wanted || weightedPick(candidates.length ? candidates : index.filter((a) => a.has_prediction)), true);
+  const showcase = index.filter(isShowcase);
+  const candidates = showcase.filter((a) => (a.popularity_weight || 0) >= RANDOM_MIN_WEIGHT);
+  // First paint stays at the top of the page (user 2026-09-27): no scroll to the result card on load.
+  await pick(wanted || weightedPick(candidates.length ? candidates : showcase), true, { scroll: false });
   const cloudWrap = $('cloud-wrap');
   if (cloudWrap) { cloudWrap.hidden = false; mountCloud($('cloud'), index, (a) => { pick(a, true); window.scrollTo({ top: result.offsetTop - 12, behavior: 'smooth' }); }); }
 
   form.addEventListener('submit', (e) => { e.preventDefault(); go(); });
 }
 
-async function pick(a, autoGo = false) {
+async function pick(a, autoGo = false, { scroll = true } = {}) {
   searchCtl.setValue(a);
   setQs('id', a.id);
   result.innerHTML = '';
@@ -76,7 +80,7 @@ async function pick(a, autoGo = false) {
     result.append(coldStart(artist));
     return;
   }
-  if (autoGo) go(); else result.innerHTML = '';
+  if (autoGo) go({ scroll }); else result.innerHTML = '';
 }
 
 // Calibration sentence built from model.json (warning.calibration bins), so the numbers follow every refresh.
@@ -88,7 +92,7 @@ function calibSentence(m) {
   return `when the model said ${lo.mean_predicted_pct}%, about ${lo.actual_drop_pct}% of those albums actually dropped that much; when it said ${hi.mean_predicted_pct}%, about ${hi.actual_drop_pct}% did.`;
 }
 
-function go() {
+function go({ scroll = true } = {}) {
   if (!artist) return;
   if (!artist.meta.has_prediction || !artist.grid?.length) { result.innerHTML = ''; result.append(coldStart(artist)); if (tlView) { tlView.innerHTML = ''; tlView.append(renderTimeline(artist)); } return; }
   const type = typeIn.value;
@@ -110,7 +114,7 @@ function go() {
   const row = findRow(artist.grid, type, nvDelta, mo);
   result.append(renderCard(row, { type, nv, lastNv, nvDelta, mo, date: dateIn.value, stale, cutoff: toISODate(cutoff) }));
   if (tlView) { tlView.innerHTML = ''; tlView.append(renderTimeline(artist)); }
-  result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (scroll) result.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function findRow(grid, type, nvDelta, mo) {
@@ -190,6 +194,10 @@ function renderCard(row, sc) {
     ));
   }
 
+  // 6b. latest album skipped as a sales-data anomaly: the drop chance compares with an earlier album (export forecast_note)
+  const cmp = comparisonNote(artist);
+  if (cmp) card.append(cmp);
+
   // 7. disclaimer
   card.append(el('div', { class: 'disclaimer' },
     el('div', { class: 'big' }, 'THIS SALES FORECAST IS FOR ENTERTAINMENT ONLY'),
@@ -263,8 +271,13 @@ function per100(x) { return x == null ? '?' : Math.round(x * 100); }
 
 function coldStart(a) {
   const m = a.meta;
-  const n = notice(`${m.name_en} — no forecast`,
-    "We can't anchor a forecast for this act: either its last album with usable first-week sales came out before 2019, when our training window starts, or every first-week figure we hold for it looks like a data anomaly.");
+  // reasons read from the timeline: sales-data anomaly flags (forecast_status) and the training window (2026-09-28)
+  const why = noForecastReasons(a);
+  const n = notice(`${m.name_en} — no forecast`, `We can't anchor a forecast for this act. ${why.sentences.join(' ')}`);
+  if (why.flagged.length) {
+    n.append(el('p', { class: 'anomaly-note' }, el('b', {}, 'Sales data anomaly: '), ANOMALY_WHY, ' ',
+      el('a', { href: ANOMALY_ABOUT }, 'How we spot this')));
+  }
   n.append(el('p', { class: 'small muted' }, 'Think we are missing an album? '), formLink(formUrl('fix'), 'Missing an album? Tell me →', 'btn sm fix'));
   return n;
 }

@@ -7,6 +7,7 @@ import { latestRoster } from './roster.js';
 import * as CFG from '../config.js';
 import { formUrl,
   el, boot, qs, setQs, weightedSample, weightedPick, fmtYm, maskedText, fmtDate, fmtPct, typeLabel, tierLabel, formLink,
+  noForecastReasons, comparisonNote,
 } from './util.js';
 
 boot();
@@ -59,8 +60,10 @@ async function show(id) {
     el('p', { class: 'meta' },
       m.has_prediction
         ? el('a', { href: `../?id=${encodeURIComponent(m.id)}` }, 'Forecast the next album →')
-        : el('span', { class: 'muted' }, 'No forecast (last usable album before 2019, or every first-week figure looks like a data anomaly).'),
+        : el('span', { class: 'muted' }, `No forecast. ${noForecastReasons(a).sentences.join(' ')}`),
     ),
+    // latest album skipped as a sales-data anomaly (export forecast_note, forecast artists only)
+    m.has_prediction ? comparisonNote(a) : null,
   ));
 
   view.append(el('div', { class: 'fixbar' },

@@ -56,11 +56,12 @@ by a model that never saw it. Sales figures are never shown raw — only ratios,
 - Sales come from an internal dataset compiled from public sales summaries and charts; artist facts from Wikipedia and
   Soridata; fan growth from public follower counts. Details and licenses are on the About page.
 - This repository holds only the static site (HTML, JS, CSS) and the model's published outputs (JSON). It contains no
-  raw sales data.
+  raw sales data. The code behind the forecasts (data collection, features, model and evaluation) is private; the
+  About page describes the methods, the data sources and the limits of the model.
 
 ## Contact
 
 Corrections, missing artists and other messages go through the form linked on every page. Source maintainers who want
 a credit worded differently, or something removed, are welcome to use it too.
 
-*Generated 2026-09-27 by the site build.*
+*Generated 2026-09-28 by the site build.*
