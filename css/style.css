@@ -223,6 +223,7 @@ p { margin: 0.4rem 0; }
 .legend .sw { display: inline-block; width: 10px; height: 10px; border-radius: 50%; }
 .legend .sw.median { background: var(--median); }
 .legend .sw.band { background: var(--band); opacity: 0.55; }
+.legend .sw.prev { width: 0; height: 12px; border-radius: 0; border-left: 1.6px dashed var(--ink); }
 
 .warn {
   margin: 16px 0 0; padding: 12px 14px; border-radius: 14px; font-size: 0.8rem; line-height: 1.45; color: #4a3a00;
@@ -319,6 +320,11 @@ p { margin: 0.4rem 0; }
 .tl-reasons .pct.pos { color: var(--up); }
 .tl-reasons .pct.neg { color: var(--down); }
 .tl-none { margin: 8px 0 0; font-size: 0.78rem; color: var(--ink-3); font-style: italic; }
+.text-link { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.tl-reasons-head { margin: 8px 0 0; font-size: 0.7rem; color: var(--ink-3); line-height: 1.3; }
+.tl-key { margin: 4px 0 10px; padding: 0 8px; font-size: 0.74rem; color: var(--ink-3); line-height: 1.35; }
+.info-bands { margin: 4px 0 8px; padding: 0; list-style: none; }
+.info-bands li { margin: 2px 0; }
 .tl-note { margin: 6px 0 0; font-size: 0.72rem; line-height: 1.35; color: var(--ink-3); }
 .roster { margin-top: 8px; font-size: 0.78rem; color: var(--ink-2); }
 .roster .names { color: var(--ink); }
@@ -327,6 +333,9 @@ p { margin: 0.4rem 0; }
 /* ---------- findings ---------- */
 .finding { padding: 28px 24px; }
 #findings { display: grid; gap: 28px; margin-top: 8px; }
+/* grid items default to min-width:auto, so a wide table pushed the cards ~30px past a 375px screen (2026-09-28) */
+#findings > * { min-width: 0; }
+#contact-links .btn { white-space: normal; max-width: 100%; }
 .finding .num { font-size: 2rem; font-weight: 800; letter-spacing: -0.03em;
   background: linear-gradient(90deg, var(--pink), var(--violet)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .finding h2 { font-size: 1.1rem; margin-top: 8px; line-height: 1.3; }
@@ -396,3 +405,21 @@ table.mini td:first-child,table.mini th:first-child{text-align:left}
 .anomaly-note { margin: 8px 0 0; padding: 6px 9px; border-radius: 9px; font-size: 0.76rem; line-height: 1.45; color: #8a4b00; background: rgba(255, 196, 80, 0.18); }
 .anomaly-note b { color: #6b3a00; }
 .anomaly-note a { color: inherit; text-decoration: underline; }
+
+.sc-share-row { margin: 10px 0 0; }
+.sc-share { font: inherit; font-size: 0.78rem; font-weight: 700; color: var(--violet); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+
+/* ---- layout pass 2026-09-28 (owner: check the whole site's layout) ---- */
+/* the axis SVG scales with the card: on a 720px card its labels were larger than the body text */
+.axis-wrap svg { max-width: 520px; }
+/* keep "(6 → 15)" together in reason labels and facts */
+.nowrap { white-space: nowrap; }
+/* word cloud: names drifting past the edges fade out instead of being cut in half */
+.cloud { -webkit-mask-image: linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%); }
+/* findings: long big numbers ("+15% / −23% / −47%") shrink on phones instead of breaking; small table fits 375px */
+.finding .num { font-size: clamp(1.35rem, 7vw, 2rem); }
+@media (max-width: 480px) {
+  table.mini { font-size: 0.72rem; }
+  table.mini th, table.mini td { padding: 5px 4px; }
+}

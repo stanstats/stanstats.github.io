@@ -36,8 +36,19 @@ export function fmtShort(n) {
 
 export function fmtPct(p, digits = 0) {
   if (p == null || isNaN(p)) return '—';
-  const s = (p >= 0 ? '+' : '−') + Math.abs(p).toFixed(digits) + '%';
-  return s;
+  const a = Math.abs(p);
+  // thousands separator, and no decimals from 1,000% up (+58000.0% -> +58,000%; review 2026-09-28)
+  const body = a >= 1000 ? Math.round(a).toLocaleString('en-US') : a.toFixed(digits);
+  return (p >= 0 ? '+' : '−') + body + '%';
+}
+
+/** Solo / girl group / boy group / co-ed group; a group with no gender on file says so (owner 2026-09-28: the old
+ *  fallback printed "Co-ed group" for 11 groups whose gender is simply missing). */
+export function actKind(m) {
+  if (!m) return 'data not available';
+  if (m.is_solo) return 'Solo';
+  return m.gender === 'female' ? 'Girl group' : m.gender === 'male' ? 'Boy group' : m.gender === 'coed' ? 'Co-ed group'
+    : 'data not available';
 }
 
 export function pct100(x, digits = 0) { return (x * 100).toFixed(digits) + '%'; }
@@ -92,13 +103,18 @@ export function isShowcase(a) {
 /** Sales-data anomaly flags written by src/site/export.py (owner ruling 2026-09-25; surfaced on the site 2026-09-28).
  *  A timeline album whose first-week figure is judged a channel under-count (first week below 0.3 x the release year's
  *  usual ratio to the monthly chart, src/model/clock.py _coverage_flags) carries forecast_status 'sales_data_anomaly'
- *  and forecast_note ("Sales data anomaly: no forecast possible"); it has no reasons and is never a reference album.
- *  A forecast artist whose latest album(s) are flagged carries a top-level forecast_note ("Change is compared with X
+ *  and forecast_note ("Our model can't forecast this album"); it has no reasons and is never a reference album.
+ *  A forecast artist whose latest album(s) are flagged carries a top-level forecast_note ("Compared with X (Oct 2022): our
+ *  model can't use the first-week number of the latest album, Y (Apr 2024)." -- older exports: "Change is compared with X
  *  (ym); the latest album Y (ym) is excluded: sales data anomaly.") plus comparison_album. The artist meta carries no
  *  status. 'sales_data_anomaly' is the only status value the export writes today. */
 export const ANOMALY_STATUS = 'sales_data_anomaly';
-export const ANOMALY_WHY = 'The first-week figure we hold is far below what the official monthly chart shows for the same album, which usually means some sales channels were not counted.';
+export const ANOMALY_WHY = 'The first-week number we have looks incomplete: it is far below the official monthly chart for the same album.';
+// Owner 2026-09-28: say plainly that the model cannot forecast this album (replaces "Sales data anomaly: no forecast possible").
+export const ANOMALY_LABEL = "Our model can't forecast this album.";
 export const ANOMALY_ABOUT = new URL('../about/#no-forecast', import.meta.url).href;
+// Owner 2026-09-28: no-forecast wording stays general; no year, no album names (the rules are on the About page).
+export const NO_FORECAST_TEXT = "Our database doesn't have enough data to forecast this artist yet.";
 export const TRAIN_FROM_YEAR = 2019;   // configs/eval_clock.yaml train_from; not in model.json, keep in step by hand
 export const isAnomaly = (t) => !!t && t.forecast_status === ANOMALY_STATUS;
 const withStop = (s) => String(s).trim().replace(/\.?$/, '.');
@@ -107,14 +123,22 @@ const withStop = (s) => String(s).trim().replace(/\.?$/, '.');
 export function anomalyNote(t) {
   if (!isAnomaly(t)) return null;
   return el('p', { class: 'anomaly-note' },
-    el('b', {}, withStop(t.forecast_note || 'Sales data anomaly: no forecast possible')), ' ', ANOMALY_WHY, ' ',
+    el('b', {}, ANOMALY_LABEL), ' ', ANOMALY_WHY, ' ',
     el('a', { href: ANOMALY_ABOUT }, 'How we spot this'));
 }
 
 /** Note for a forecast artist whose latest album is flagged (top-level forecast_note), or null. */
 export function comparisonNote(a) {
   if (!a || !a.forecast_note) return null;
-  return el('p', { class: 'anomaly-note' }, withStop(a.forecast_note), ' ', el('a', { href: ANOMALY_ABOUT }, 'Why'));
+  // Built from comparison_album + the flagged latest album so dates read "Oct 2022" like the rest of the site; the
+  // exported forecast_note text is only the fallback.
+  const c = a.comparison_album;
+  const flagged = ((a.timeline) || []).filter(isAnomaly);
+  const f = flagged.length ? flagged[flagged.length - 1] : null;
+  if (!c || !f) return el('p', { class: 'anomaly-note' }, withStop(a.forecast_note), ' ', el('a', { href: ANOMALY_ABOUT }, 'Why'));
+  return el('p', { class: 'anomaly-note' },
+    `Compared with ${c.title} (${fmtYm(c.release_ym)}): our model can't use the first-week number of the latest album, ${f.title} (${fmtYm(f.release_ym)}). `,
+    el('a', { href: ANOMALY_ABOUT }, 'Why'));
 }
 
 /** Plain-English reasons why an artist has no forecast, read from its timeline: flagged albums, and a last trustworthy
@@ -127,16 +151,16 @@ export function noForecastReasons(a) {
   const name = (t) => `${t.title} (${fmtYm(t.release_ym)})`;
   const sentences = [];
   if (last && Number(String(last.release_ym).slice(0, 4)) < TRAIN_FROM_YEAR) {
-    sentences.push(`The last album with a trustworthy first-week figure, ${name(last)}, came out before ${TRAIN_FROM_YEAR}, when our training data starts.`);
+    sentences.push(`The last album with a usable first-week number, ${name(last)}, came out before ${TRAIN_FROM_YEAR}, where our data starts.`);
   }
   if (flagged.length) {
     const list = flagged.map(name).join(', ');
     sentences.push(clean.length
-      ? `The first-week figure of ${list} is a sales data anomaly, so ${flagged.length === 1 ? 'it' : 'they'} cannot anchor a forecast${sentences.length ? ' either' : ''}.`
-      : `Every first-week figure we hold for this act (${flagged.map((t) => `${t.title}, ${fmtYm(t.release_ym)}`).join('; ')}) is a sales data anomaly, so there is nothing to anchor a forecast on.`);
+      ? `Our model can't use the first-week number of ${list}${sentences.length ? ' either' : ''}.`
+      : `Our model can't use any first-week number we have for this artist (${flagged.map((t) => `${t.title}, ${fmtYm(t.release_ym)}`).join('; ')}).`);
   }
   if (!sentences.length) {
-    sentences.push(`Either its last album with usable first-week sales came out before ${TRAIN_FROM_YEAR}, when our training data starts, or every first-week figure we hold for it looks like a data anomaly.`);
+    sentences.push(`Either its last album with a usable first-week number came out before ${TRAIN_FROM_YEAR}, where our data starts, or our model can't use any first-week number we have for it.`);
   }
   return { sentences, flagged };
 }
@@ -235,7 +259,7 @@ export function formLink(url, text, cls = 'btn') {
   const a = el('a', { class: cls, href: url || '#', target: url ? '_blank' : null, rel: url ? 'noopener' : null }, text);
   if (!url) {
     a.setAttribute('aria-disabled', 'true');
-    a.title = 'Form not set up yet — see site/config.js';
+    a.title = 'Feedback form not available yet';
     a.addEventListener('click', (e) => e.preventDefault());
   }
   return a;
@@ -334,6 +358,12 @@ export function mountLike() {
     }
   });
   refresh();
+}
+
+/** The one quiet "fix the data" entry, as plain text inside a sentence (owner 2026-09-28: no floating button, no
+ *  repeated buttons). Used once in the artist header, once at the end of the timeline, once on the Home result card. */
+export function fixLink(text = 'corrections welcome') {
+  return formLink(formUrl('fix'), text, 'text-link');
 }
 
 export function boot() {

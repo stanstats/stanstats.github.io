@@ -10,8 +10,6 @@ export const DATA_BASE = './data/';
 // "kind" field tells you what the message is about. Leave empty to show a "not set up yet" notice instead of a broken link.
 export const FORM_URL = 'https://tally.so/r/kdqo7j';
 
-// "Buy the developer a coffee" link (Ko-fi / Buy Me a Coffee). Empty = plain text, no link.
-export const COFFEE_URL = '';
 
 // Public code repository, read only by js/findings.js ("Read the experiment note" links). Owner ruling 2026-09-28:
 // the code stays private and only the site repository is public, so this stays empty (links hidden). The About page

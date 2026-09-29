@@ -1,12 +1,11 @@
 // About: fill in data cutoff, the accuracy table and its tested years, and placeholder links from config.
 import { loadModel } from './data.js';
-import * as CFG from '../config.js';
 import { formUrl, boot, formLink, el, tierLabel, fmtInt, fmtDate } from './util.js';
 
 boot();
 
 loadModel().then((m) => {
-  document.getElementById('data-cutoff').textContent = m.data_cutoff || '—';
+  document.getElementById('data-cutoff').textContent = m.data_cutoff ? fmtDate(m.data_cutoff) : '—';
   const v = document.getElementById('model-version');
   // model_version is an internal code name; show only when the model was last updated (month of generated_at).
   const upd = m.generated_at ? new Date(m.generated_at) : null;
@@ -18,17 +17,13 @@ loadModel().then((m) => {
       tb.append(el('tr', {},
         el('td', {}, tierLabel(tier)),
         el('td', {}, tm.n != null ? fmtInt(tm.n) : '—'),
-        el('td', {}, tm.median_err_x != null ? `about ${Math.round((tm.median_err_x - 1) * 100)}% either way` : '—'),
-        el('td', {}, tm.hit_2x != null ? `${Math.round((1 - tm.hit_2x) * 100)}% of the time` : '—')));
+        // median_err_x is a median fold error: x times too low (+) or x times too high (−), written both ways
+        el('td', {}, tm.median_err_x != null
+          ? `+${Math.round((tm.median_err_x - 1) * 100)}% or −${Math.round((1 - 1 / tm.median_err_x) * 100)}%` : '—'),
+        el('td', {}, tm.hit_2x != null ? `${Math.round((1 - tm.hit_2x) * 100)}% of forecasts` : '—')));
     }
   }
 }).catch(() => { document.getElementById('data-cutoff').textContent = '—'; });
-
-const coffee = document.getElementById('coffee');
-if (coffee) {
-  if (CFG.COFFEE_URL) { coffee.href = CFG.COFFEE_URL; coffee.target = '_blank'; coffee.rel = 'noopener'; }
-  else { coffee.replaceWith(el('span', {}, coffee.textContent)); }
-}
 
 const contact = document.getElementById('contact-links');
 if (contact) {

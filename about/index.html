@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>About · why a fan built a K-pop 초동 forecast (이 사이트를 만든 이유)</title>
+  <title>About · K-pop 초동 forecast (이 사이트를 만든 이유)</title>
   <meta name="description" content="Why a K-pop fan built a first-week album sales (초동) forecast, how to read the range, what data it uses, and how to get in touch. 케이팝 팬이 앨범 초동 예측 사이트를 만든 이유와 읽는 법.">
   <meta name="keywords" content="케이팝 초동, 초동 예측, 초동 판매량, 앨범 초동, 컴백 초동 예상, 아이돌 앨범 판매량, 초동 순위, 첫주 판매량, K-pop first-week sales, chodong, album sales forecast, comeback prediction, K-pop data analysis">
   <meta name="theme-color" content="#f6f3ff">
@@ -19,7 +19,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="About · K-pop 초동 forecast">
   <meta name="twitter:description" content="Why a K-pop fan built a first-week album sales forecast, what data it uses, and how to read the ranges.">
-  <meta name="twitter:image" content="../img/og.png">
+  <meta name="twitter:image" content="https://stanstats.github.io/img/og.png">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23ff5fa2'/%3E%3Ccircle cx='62' cy='40' r='22' fill='%237b61ff' opacity='.8'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,6 +34,7 @@
       <a class="brand" href="../">K-pop <em>초동</em> forecast</a>
       <nav class="nav" aria-label="Site">
         <a href="../">Home</a>
+        <a href="../artist/">Artists</a>
         <a href="../findings/">Findings</a>
         <a href="./">About</a>
       </nav>
@@ -42,43 +43,45 @@
     <main>
       <section class="hero">
         <h1>Purpose <span class="kr" lang="ko">이 사이트를 만든 이유</span></h1>
-        <p class="tagline">Cause I am a K-pop fan.</p>
+        <p class="tagline">Because I am a K-pop fan.</p>
       </section>
 
       <article class="glass card prose">
         <p>If you are one too, you know the stories. The album that only happened because the members kept asking for it. The group that never got another comeback because the last one "didn't sell". I have watched artists I love wait for years for a chance that never came.</p>
         <p>Inside the industry, the next album is planned off the last one. Someone looks at the previous first-week number, guesses the next, and decides. One miss makes it very hard to argue for another try.</p>
         <p>So I tried to build a forecasting model from public data. I am a fan with some statistics, not an industry insider, and the model is a modest thing: it looks at what an artist has already done and gives a range for the next album.</p>
-        <p>K-pop is an art about people and feelings. Data does not replace that, and I don't want it to. The data is full of idols and fans who went far past anything a model expected, and those are my favourite rows.</p>
+        <p>K-pop is an art about people and feelings. Data does not replace that, and I don't want it to. The data is full of idols and fans who went far past anything a model expected, and those are my favourite cases.</p>
         <p>The model gives a deliberately wide range, not a single number, and it is wrong often. Every card says so. Please treat it as a reference and nothing more.</p>
         <p>This is a hobby: non-profit, nobody pays for it and nobody is selling anything.</p>
 
         <h3 id="what-is-chodong">What is 초동? <span class="kr" lang="ko">초동이란</span></h3>
-        <p>초동 (chodong, "first movement") is the number of copies a K-pop album sells in its first seven days on the Korean charts. Because most K-pop albums are bought by fans in the first week, 초동 is the number the industry uses to size a fandom, to compare comebacks and to decide whether the next album happens. This site forecasts that first-week number before the comeback is announced.</p>
+        <p>초동 (chodong, "first movement") is the number of copies a K-pop album sells in its first seven days on the Korean charts. Because most K-pop albums are bought by fans in the first week, 초동 is the number the industry uses to size a fandom, to compare comebacks and to decide whether the next album happens. This site forecasts that first-week number before the comeback is announced. You can look up the album-by-album record and the forecast for about 500 groups and soloists.</p>
         <p lang="ko">초동은 앨범 발매 후 첫 7일 동안의 판매량입니다. 케이팝 앨범은 대부분 팬덤이 첫 주에 구매하기 때문에, 초동은 팬덤 규모를 재고 컴백을 비교하고 다음 앨범을 낼지 결정할 때 쓰는 기준 숫자가 되었습니다. 이 사이트는 컴백 발표 전에 그 초동을 예측합니다. 아이돌 그룹과 솔로 가수 500여 팀의 앨범별 초동 기록과 예상 초동을 볼 수 있습니다.</p>
 
         <h3>About the clock</h3>
-        <p>The model only uses what is knowable about <strong>120 days before release</strong>, which is roughly when the "do we make this album?" decision happens. What it forecasts is the <strong>first-week sales figure (초동)</strong>, the number the industry actually judges a comeback by.</p>
+        <p>The model only uses what is knowable about <strong>120 days before release</strong>, which is roughly when a company decides whether to make the album. What it forecasts is the <strong>first-week sales figure (초동)</strong>, the number the industry actually judges a comeback by.</p>
 
         <h3 id="how-to-read">How to read the forecast</h3>
-        <p>Every forecast card shows one number and three purple bands.</p>
-        <p><strong>The number</strong> is our middle guess for the artist's next album in first-week copies. Half of the time the real number would be above this, half below.</p>
-        <p><strong>The three purple bands</strong> are how sure we are: there is a 50% chance the real first week lands inside the darkest band, an 80% chance it lands inside the middle band, and a 90% chance it lands inside the widest one. Tap the ⓘ next to "Likely between" on any card to see these bands spelled out with that artist's numbers.</p>
-        <p><strong>What the model learns from.</strong> The model is fitted only on albums released from 2019 onward. Older albums still count as an artist's "previous album", but the model is not trained on them, because before 2019 we have no record of how fast an artist's Instagram following was growing, one of the signals the forecast relies on.</p>
-        <p><strong>How do we know?</strong> We tested the model the way it is used: for each year from <span id="oos-from">2022</span> to <span id="oos-to">2026</span>, we fitted it only on albums released before that year and then forecast that year's albums, so it never saw the answer. The <span id="oos-to-2">2026</span> test runs to <span id="oos-until">3 Sep 2026</span>, where our data ends. That makes <span id="oos-n">1,140</span> tested albums, grouped below by how big the artist's previous album was. Our guess was typically off by the "typical miss" below either way, and a share of the time it was off by more than double. Those past misses are what set the width of the bands:</p>
-        <table class="tiers" id="tier-table" aria-label="Historical misses by artist size">
-          <thead><tr><th>Previous album</th><th>Albums tested</th><th>Typical miss</th><th>Off by more than 2×</th></tr></thead>
+        <p><strong>Your scenario, not news.</strong> The release month, album type and number of versions on the forecast card are what you picked. Change them and the forecast changes. Nothing on this site is news about a real comeback.</p>
+        <p>Every forecast card shows one number and three purple bands. Sales are counted in copies sold in the first week. Past sales on the timelines show the first two digits and hide the rest on purpose, like 45*,***.</p>
+        <p><strong>The number</strong> is our best guess for the artist's next album. The real number has a 50% chance of coming in above it and a 50% chance of coming in below it.</p>
+        <p><strong>The three purple bands</strong> show how sure we are: a 50% chance the real first week lands inside the darkest band, 80% inside the middle band and 90% inside the widest one. "Likely between" on the card is the middle band, the 80% one. Even the widest band still misses 10% of the time; a band that never missed would be too wide to be useful. Tap the i next to "Likely between" to see the bands with that artist's numbers.</p>
+        <p><strong>What the model learned from.</strong> It learned only from albums released in 2019 or later, because before 2019 we have no record of how fast an artist's Instagram following was growing, one of the signals it uses. Older albums still appear on the timelines and still count as an artist's "previous album".</p>
+        <p><strong>How do we know?</strong> We tested the model the way it is used: for each year from <span id="oos-from">2022</span> to <span id="oos-to">2026</span>, we let it learn only from albums released before that year, then asked it to forecast that year's albums, so it never saw the answers. The <span id="oos-to-2">2026</span> test runs to <span id="oos-until">3 Sep 2026</span>, where our data ends. That makes <span id="oos-n">1,140</span> tested albums, grouped by how many copies the artist's previous album sold in its first week. For each group, the table shows how far off our guess usually was, and how often it was more than double or less than half the real number. Those past misses set the width of the bands:</p>
+        <table class="tiers" id="tier-table" aria-label="Past forecast misses, grouped by how much the artist's previous album sold">
+          <thead><tr><th>Previous album's first week</th><th>Past albums we tested on</th><th>Usually off by</th><th>More than double or less than half</th></tr></thead>
           <tbody></tbody>
         </table>
-        <p><strong>The bands are wider on the upside</strong> because album sales move in multiples, not in fixed amounts — a jump to the top of the band and a drop to the bottom are the same size in percentage terms.</p>
+        <p><strong>The bands look longer on the upside</strong> because sales move in multiples. Around a guess of 100,000, "twice as much" is 200,000 (+100,000) and "half as much" is 50,000 (−50,000): the same step, but the upward one takes more room on the axis.</p>
 
         <h3 id="no-forecast">When we give no forecast</h3>
-        <p>Sometimes the first-week figure we hold for an album is too low to be real. We check it against the official monthly chart for the same album: in any given year the two figures keep a fairly steady ratio, and when an album's first week comes in below 30% of that year's usual ratio, some sales channels were almost certainly not counted. We call that a <strong>sales data anomaly</strong>. Such an album gets no forecast and no explanation on its timeline, it is not among the tested albums above, and it is never used as the "last album" a forecast is compared with. When it is an artist's latest album, the forecast card says which earlier album it is compared with instead.</p>
-        <p>An artist gets no forecast at all when every first-week figure we hold for them is a sales data anomaly, or when their last album with a trustworthy first-week figure came out before 2019, when the training data starts.</p>
+        <p>Sometimes the first-week number we have for an album is too low to be real. We can tell because the official monthly chart for the same album is far higher; normally the two move together. When the first week is below 30% of where it should be, some sales were probably never counted, and <strong>our model can't forecast that album</strong>. This says the number is incomplete, not that the album did badly.</p>
+        <p>Such an album gets no reason labels on its timeline, is left out of the accuracy table above, and is never the "last album" a forecast is compared with. If it is the artist's latest album, the forecast card names the earlier album it uses instead.</p>
+        <p>An artist gets no forecast at all when our database doesn't have enough recent data for them yet.</p>
 
         <h3>Data</h3>
-        <p>Data as of <strong id="data-cutoff">…</strong><span id="model-version" class="muted"></span>.</p>
-        <p>If this site turns out to be useful to you, or if you spot something wrong, please let me know through the forms below. Hearing that it is being used is what makes me want to keep the data fresh and the model better.</p>
+        <p>Data through <strong id="data-cutoff">…</strong><span id="model-version" class="muted"></span>. Albums released after that date are not on the site yet.</p>
+        <p>If this site turns out to be useful to you, or if you spot something wrong, please let me know through the form below. Hearing that it is being used is what makes me want to keep the data fresh and the model better.</p>
 
         <h3 id="credits">Data &amp; credits</h3>
         <p>This site is a hobby research project; it is not affiliated with, endorsed by, or sponsored by any chart, retailer, platform or company named below.</p>
@@ -86,16 +89,15 @@
         <ul class="credits">
           <li><span class="dot"></span><div><b>Wikipedia</b> <a class="ext" href="https://www.wikipedia.org/" target="_blank" rel="noopener" aria-label="Wikipedia (opens in a new tab)">↗</a><span class="use">English, Korean and Japanese editions — artist facts, rosters, debut dates, military service and album metadata. Text available under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.</span></div></li>
           <li><span class="dot"></span><div><b>Korean Sales</b> <a class="ext" href="https://koreansalestwt.blogspot.com/" target="_blank" rel="noopener" aria-label="Korean Sales blog (opens in a new tab)">↗</a><span class="use">A fan-maintained blog of per-artist album sales summaries (koreansalestwt.blogspot.com). It is the main public source the internal sales dataset was compiled from, and it also supplies album metadata such as release format and label. No sales figure from it is reproduced on this site.</span></div></li>
-          <li><span class="dot"></span><div><b>Soridata</b> <a class="ext" href="https://www.soridata.com/" target="_blank" rel="noopener" aria-label="Soridata (opens in a new tab)">↗</a><span class="use">Freely downloadable Korean music database (<a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>) — digital-chart aggregates, awards and debut dates. Derived tables we publish keep the same license.</span></div></li>
+          <li><span class="dot"></span><div><b>Soridata</b> <a class="ext" href="https://www.soridata.com/" target="_blank" rel="noopener" aria-label="Soridata (opens in a new tab)">↗</a><span class="use">Freely downloadable Korean music database (<a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>) — digital-chart aggregates, awards and debut dates.</span></div></li>
           <li><span class="dot"></span><div><b>K-Pop Radar</b> <a class="ext" href="https://www.kpop-radar.com/" target="_blank" rel="noopener" aria-label="K-Pop Radar (opens in a new tab)">↗</a><span class="use">Monthly follower counts of official Instagram accounts, used only as growth rates (followers gained per month divided by followers already held). No follower count is shown.</span></div></li>
           <li><span class="dot"></span><div><b>YouTube</b> <a class="ext" href="https://www.youtube.com/" target="_blank" rel="noopener" aria-label="YouTube (opens in a new tab)">↗</a><span class="use">Upload dates on official channels, used only for upload cadence (how many videos in recent months). No video, title or view count is shown.</span></div></li>
-          <li><span class="dot"></span><div><b>Brokerage research reports</b><span class="use">Yuanta, KB, Samsung and Kiwoom Securities — quoted, with attribution, in the practitioner benchmark in our findings; copyright remains with the publishers.</span></div></li>
           <li><span class="dot"></span><div><b>Used during research, not by the current model</b><span class="use">Wikimedia pageviews (<a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0</a>), Wikidata (CC0), the K-pop Wiki at Fandom (<a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">CC BY-SA 3.0</a>), Archive of Our Own's 2021 data dump for fan statisticians, Google Trends, Ktown4u, BigKinds (Korea Press Foundation), Soompi and Douban. Nothing from these services appears on this site, and their own terms of use apply to their data.</span></div></li>
         </ul>
         <p>Our findings and the explanations on this site are under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. If you maintain one of the sources above and would like your credit worded differently, or would like something removed, use the contact form and we will act on it.</p>
 
         <h3>Get in touch</h3>
-        <p>Anonymous forms, no account needed. Corrections are the most useful thing you can send.</p>
+        <p>An anonymous form, no account needed. Corrections are the most useful thing you can send.</p>
         <p id="contact-links"></p>
 
         <h3>Methods and code</h3>

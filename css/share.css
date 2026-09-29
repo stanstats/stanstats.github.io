@@ -1,0 +1,147 @@
+/* Share cards (site/js/share.js): 1080 x 1350 PNGs rendered in the browser. Everything is scoped under .xc so nothing
+   leaks into the page. No backdrop-filter anywhere: it does not survive DOM-to-PNG, so the soft glass look is painted. */
+.xc-stage { position: fixed; left: -12000px; top: 0; pointer-events: none; }
+.xc { width: 1080px; height: 1350px; position: relative; overflow: hidden; box-sizing: border-box;
+  font-family: "Plus Jakarta Sans", "Noto Sans KR", -apple-system, "Segoe UI", sans-serif; color: #1d1a2e;
+  background: linear-gradient(160deg, #fff4fa 0%, #f3efff 45%, #eaf6ff 100%); padding: 72px 80px 0;
+  display: flex; flex-direction: column; letter-spacing: -0.005em; }
+.xc * { box-sizing: border-box; }
+.xc::before, .xc::after { content: ""; position: absolute; border-radius: 50%; z-index: 0; opacity: .55; }
+.xc::before { width: 620px; height: 620px; right: -220px; top: -200px; background: radial-gradient(circle at 35% 35%, #ffc2dc, #ffc2dc00 70%); }
+.xc::after { width: 700px; height: 700px; left: -300px; bottom: -260px; background: radial-gradient(circle at 60% 40%, #c9e9ff, #c9e9ff00 70%); }
+.xc > * { position: relative; z-index: 1; flex-shrink: 0; }
+.xc .x-kr { font-family: "Noto Sans KR", "Plus Jakarta Sans", sans-serif; letter-spacing: 0; }
+
+.xc .x-top { display: flex; align-items: center; }
+.xc .x-brand { display: flex; align-items: center; gap: 18px; font-weight: 800; font-size: 34px; }
+.xc .x-brand em { font-style: normal; font-family: "Noto Sans KR", sans-serif; color: #ff5fa2; }
+.xc .x-logo { width: 64px; height: 64px; display: block; }
+
+/* card 1: forecast */
+.xc .x-artist { margin-top: 44px; }
+.xc .x-kicker { font-size: 26px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #7b61ff; }
+.xc .x-kicker .x-kr { font-weight: 500; color: #8a85a6; text-transform: none; margin-left: 12px; }
+.xc .x-name { font-size: 96px; font-weight: 800; letter-spacing: -.03em; line-height: 1.02; margin-top: 14px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.xc .x-name.x-m { font-size: 76px; } .xc .x-name.x-s { font-size: 60px; }
+.xc .x-name-kr-inline { font-size: 44px; font-weight: 700; color: #8a85a6; margin-left: 18px; letter-spacing: 0; }
+.xc .x-name-kr { font-size: 40px; font-weight: 700; color: #8a85a6; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.xc .x-whatif { display: flex; align-items: center; gap: 14px; margin-top: 30px; flex-wrap: nowrap; }
+.xc .x-tag { white-space: nowrap; font-size: 22px; font-weight: 800; letter-spacing: .12em; color: #fff; background: #1d1a2e; padding: 10px 18px; border-radius: 12px; }
+.xc .x-pill { font-size: 26px; font-weight: 600; padding: 10px 22px; border-radius: 999px; background: rgba(255,255,255,.85);
+  border: 2px solid #e6e0fa; color: #4a4566; white-space: nowrap; }
+.xc .x-notann { font-size: 23px; color: #8a85a6; font-weight: 600; margin-top: 12px; }
+.xc .x-big { margin-top: 26px; }
+.xc .x-big .x-lbl { font-size: 30px; font-weight: 600; color: #4a4566; }
+.xc .x-big .x-num { font-size: 200px; font-weight: 800; letter-spacing: -.05em; line-height: .95; color: #ff4f9a; }
+.xc .x-big .x-num small { font-size: 56px; letter-spacing: 0; margin-left: 14px; color: #4a4566; font-weight: 700; }
+.xc .x-big .x-range { font-size: 38px; font-weight: 700; margin-top: 8px; }
+.xc .x-axis { margin-top: 24px; }
+.xc .x-axis svg { width: 920px; height: auto; display: block; overflow: visible; }
+.xc .x-axis text { font-family: "Plus Jakarta Sans", sans-serif; }
+.xc .x-lines { margin-top: 16px; display: flex; flex-direction: column; gap: 14px; }
+.xc .x-line span { flex: 1; }
+.xc .x-line { display: flex; gap: 22px; align-items: baseline; font-size: 29px; font-weight: 600; line-height: 1.3; color: #1d1a2e; }
+.xc .x-line b { font-size: 42px; font-weight: 800; min-width: 150px; letter-spacing: -.02em; flex-shrink: 0; }
+.xc .x-up { color: #12b76a; } .xc .x-down { color: #f04438; }
+.xc .x-caveat { margin-top: 20px; font-size: 24px; line-height: 1.45; color: #4a4566; font-weight: 600; }
+
+/* shared footer */
+.xc .x-foot { margin-top: auto; padding: 24px 0 40px; display: flex; justify-content: space-between; align-items: flex-end;
+  border-top: 2px solid rgba(123,97,255,.14); }
+.xc .x-foot .x-url { font-size: 30px; font-weight: 800; color: #7b61ff; }
+.xc .x-foot .x-url small { display: block; font-size: 22px; color: #8a85a6; font-weight: 600; margin-top: 4px; }
+.xc .x-foot .x-meta { text-align: right; font-size: 21px; color: #8a85a6; font-weight: 600; line-height: 1.45; }
+
+/* card 2: basis and accuracy */
+.xc .x-h2 { font-size: 56px; font-weight: 800; letter-spacing: -.02em; margin-top: 36px; line-height: 1.1; }
+.xc .x-h2 .x-kr { display: block; font-size: 28px; font-weight: 500; color: #8a85a6; margin-top: 10px; }
+.xc .x-panel { background: rgba(255,255,255,.8); border: 2px solid rgba(255,255,255,.95); border-radius: 40px;
+  box-shadow: 0 18px 50px rgba(96,72,160,.12); }
+.xc .x-facts { margin-top: 30px; padding: 10px 48px; }
+.xc .x-fact { display: flex; justify-content: space-between; gap: 30px; padding: 22px 0; border-bottom: 2px solid #efeafc;
+  font-size: 27px; align-items: baseline; }
+.xc .x-fact:last-child { border-bottom: 0; }
+.xc .x-fact .x-l { color: #4a4566; font-weight: 600; line-height: 1.3; }
+.xc .x-fact .x-r { font-weight: 800; white-space: nowrap; font-size: 31px; }
+.xc .x-sect { font-size: 24px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #7b61ff; margin: 36px 0 14px; }
+.xc .x-acc { display: flex; flex-direction: column; gap: 14px; padding: 32px 44px; }
+.xc .x-acc .x-line b { font-size: 38px; }
+.xc .x-acc .x-who { font-size: 22px; color: #8a85a6; font-weight: 600; margin-top: 6px; }
+.xc .x-plain { margin-top: 28px; font-size: 29px; line-height: 1.45; font-weight: 600; }
+.xc .x-plain small { display: block; font-size: 23px; color: #8a85a6; margin-top: 12px; font-weight: 600; }
+
+/* cards 3+: album by album */
+.xc .x-sub3 { font-size: 23px; color: #8a85a6; font-weight: 600; margin-top: 10px; }
+.xc .x-albums { margin-top: 22px; display: flex; flex-direction: column; gap: 14px; }
+.xc .x-alb { background: rgba(255,255,255,.84); border: 2px solid #fff; border-radius: 32px; padding: 20px 32px;
+  box-shadow: 0 10px 30px rgba(96,72,160,.08); }
+.xc .x-alb .x-row1 { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+.xc .x-alb .x-t { font-size: 34px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 600px; }
+.xc .x-alb .x-d { font-size: 22px; color: #8a85a6; font-weight: 600; margin-top: 4px; }
+.xc .x-alb .x-s { text-align: right; white-space: nowrap; flex-shrink: 0; }
+.xc .x-alb .x-s .x-n { font-size: 32px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.xc .x-alb .x-s .x-c { font-size: 24px; font-weight: 800; }
+.xc .x-alb .x-s .x-c.x-first { color: #8a85a6; font-size: 21px; font-weight: 700; }
+.xc .x-alb .x-vs { font-size: 20px; color: #8a85a6; font-weight: 600; max-width: 300px; overflow: hidden; text-overflow: ellipsis; }
+.xc .x-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.xc .x-chip { font-size: 21px; font-weight: 600; padding: 7px 16px; border-radius: 14px; line-height: 1.25; max-width: 100%; }
+.xc .x-chip b { font-weight: 800; }
+.xc .x-chip.x-pos { background: #e3f8ee; color: #0b7a48; } .xc .x-chip.x-pos b { margin-right: 6px; }
+.xc .x-chip.x-neg { background: #fde7e5; color: #b42318; } .xc .x-chip.x-neg b { margin-right: 6px; }
+.xc .x-chip.x-base { background: #eeeaf9; color: #4a4566; } .xc .x-chip.x-base b { margin-left: 6px; }
+.xc .x-chip.x-note { background: #fff4df; color: #8a5a00; }
+
+/* preview sheet on the page */
+.share-strip { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 2px 10px; }
+.share-strip img { width: 72%; max-width: 280px; flex: none; border-radius: 12px; box-shadow: 0 6px 18px rgba(96,72,160,.18); scroll-snap-align: start; }
+.share-actions { display: flex; gap: 10px; align-items: center; margin-top: 8px; }
+.share-status { font-size: 0.8rem; color: var(--ink-3); }
+
+/* tightened after the first real render (2026-09-28): footers were pushed 20-60 px off cards 1-4 */
+.xc { padding-top: 64px; }
+.xc .x-artist { margin-top: 36px; }
+.xc .x-whatif { margin-top: 24px; }
+.xc .x-big { margin-top: 20px; }
+.xc .x-big .x-num { font-size: 180px; }
+.xc .x-axis { margin-top: 16px; }
+.xc .x-caveat { margin-top: 14px; font-size: 23px; }
+.xc .x-foot { padding: 20px 0 34px; }
+.xc .x-h2 { margin-top: 30px; font-size: 52px; }
+.xc .x-facts { margin-top: 24px; }
+.xc .x-fact { padding: 17px 0; font-size: 26px; }
+.xc .x-sect { margin: 26px 0 12px; }
+.xc .x-acc { padding: 26px 40px; }
+.xc .x-plain { margin-top: 22px; font-size: 27px; }
+.xc .x-albums { margin-top: 16px; gap: 12px; }
+.xc .x-alb { padding: 16px 28px; border-radius: 28px; }
+.xc .x-chips { gap: 8px; margin-top: 10px; }
+.xc .x-chip { font-size: 20px; padding: 5px 14px; border-radius: 12px; }
+.xc .x-big .x-num { font-size: 168px; }
+.xc .x-name-kr { font-size: 34px; margin-top: 2px; }
+.xc .x-notann { margin-top: 8px; }
+.xc .x-lines { gap: 10px; }
+.xc .x-caveat { margin-top: 10px; }
+/* long album titles wrap to two lines instead of an ellipsis: "…chapter one / two / three" all read alike when cut */
+.xc .x-alb .x-t { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.15; }
+.xc .x-alb .x-t.x-long { font-size: 28px; }
+.xc .x-alb .x-vs { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; max-width: 280px; line-height: 1.2; }
+.xc .x-alb .x-t.x-long { font-size: 26px; }
+.xc .x-alb { padding: 14px 28px; }
+.xc .x-albums { gap: 10px; }
+/* Big numbers as stat columns (owner 2026-09-28, second pass): a big number beside a paragraph never lines up -- the
+   number's weight sits top-left while the paragraph runs down to the right. Each number now heads its own column and
+   its sentence sits under it, both on the same left edge; the columns sit side by side. */
+.xc .x-lines { display: grid; grid-template-columns: 1fr 1fr; column-gap: 44px; align-items: start; }
+.xc .x-line { display: flex; flex-direction: column; gap: 6px; }
+.xc .x-line b { font-size: 60px; font-weight: 800; line-height: 1; letter-spacing: -.03em; white-space: nowrap; min-width: 0; text-align: left; }
+.xc .x-line b small { font-size: 26px; font-weight: 600; color: #8a85a6; margin-right: 10px; letter-spacing: 0; }
+.xc .x-line span { flex: none; font-size: 26px; font-weight: 600; line-height: 1.35; color: #4a4566; }
+.xc .x-acc .x-line b { font-size: 60px; }
+.xc .x-acc .x-lines { margin-bottom: 18px; }
+.xc .x-line span, .xc .x-who, .xc .x-plain, .xc .x-caveat { text-wrap: pretty; }
+.xc .x-caveat { margin-top: 10px; }
+/* colour of the big numbers (owner 2026-09-28: all-black numbers on card 2 looked flat): violet = the range held (same
+   violet as the axis band), coral = risk or a bad miss; the change vs the last album keeps green / red by direction */
+.xc .x-line b.x-good { color: #6c5ce7; }
+.xc .x-line b.x-risk { color: #ff6a4d; }

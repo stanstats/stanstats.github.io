@@ -3,23 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>K-pop 초동 예측 · first-week album sales forecast (케이팝 앨범 초동 판매량 예측)</title>
-  <meta name="description" content="Predicts the first-week album sales (초동) of any K-pop artist's next comeback from what is known 120 days before release, with a range and the reasons. 케이팝 아이돌 앨범 초동 판매량 예측: 컴백 전에 다음 앨범의 예상 초동과 그 이유를 보여줍니다. For entertainment only.">
+  <title>K-pop 초동 forecast · first-week album sales (케이팝 앨범 초동 판매량 예측)</title>
+  <meta name="description" content="How many copies will a K-pop artist's next album sell in its first week (초동)? A forecast with a likely range and the reasons behind it, made from what was public about 4 months before release. 케이팝 아이돌 앨범 초동 판매량 예측: 컴백 전에 다음 앨범의 예상 초동과 그 이유를 보여줍니다. For entertainment only.">
   <meta name="keywords" content="케이팝 초동, 초동 예측, 초동 판매량, 앨범 초동, 컴백 초동 예상, 아이돌 앨범 판매량, 초동 순위, 첫주 판매량, K-pop first-week sales, chodong, album sales forecast, comeback prediction, K-pop data analysis">
   <meta name="theme-color" content="#f6f3ff">
   <!-- share card: crawlers do not run JS, so og:image stays relative until SITE_URL is set; js/util.js seoMeta() makes it absolute at runtime -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="K-pop 초동 forecast">
   <meta property="og:title" content="K-pop 초동 forecast">
-  <meta property="og:description" content="Predicts first-week album sales (초동) of K-pop artists from what is known 120 days before release. For entertainment only.">
+  <meta property="og:description" content="How many copies will a K-pop artist's next album sell in its first week (초동)? A forecast made from what was public about 4 months before release. For entertainment only.">
   <meta property="og:image" content="https://stanstats.github.io/img/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="K-pop 초동 forecast: how many copies will the next album sell in its first week?">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="K-pop 초동 forecast">
-  <meta name="twitter:description" content="Predicts first-week album sales (초동) of K-pop artists from what is known 120 days before release. For entertainment only.">
-  <meta name="twitter:image" content="img/og.png">
+  <meta name="twitter:description" content="How many copies will a K-pop artist's next album sell in its first week (초동)? A forecast made from what was public about 4 months before release. For entertainment only.">
+  <meta name="twitter:image" content="https://stanstats.github.io/img/og.png">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23ff5fa2'/%3E%3Ccircle cx='62' cy='40' r='22' fill='%237b61ff' opacity='.8'/%3E%3C/svg%3E">
   <!-- optional web font, non-blocking; system fonts are the fallback -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,6 +40,7 @@
       <a class="brand" href="./">K-pop <em>초동</em> forecast</a>
       <nav class="nav" aria-label="Site">
         <a href="./">Home</a>
+        <a href="./artist/">Artists</a>
         <a href="./findings/">Findings</a>
         <a href="./about/">About</a>
       </nav>
@@ -50,7 +51,7 @@
         <h1>How many copies will the next album sell in its first week?
           <span class="kr" lang="ko">K-pop 앨범 초동 판매량 예측</span>
         </h1>
-        <p class="tagline">Predicts first-week album sales (초동) using only what is known about 120 days before release — roughly when a label decides whether an album happens at all.</p>
+        <p class="tagline">We guess the first-week sales (초동) of the next album using only what was public about 4 months before release, around the time a company decides whether to make the album at all.</p>
       </section>
 
       <section class="glass card" aria-labelledby="pick-h">
@@ -58,15 +59,15 @@
         <div class="field">
           <label for="search-list">Artist</label>
           <div id="search"></div>
-          <span class="hint">English or Korean name, nicknames work too. A random artist is picked for you.</span>
+          <span class="hint">English or Korean name, nicknames work too. We start you off with a well-known artist; search to change it.</span>
         </div>
 
         <form id="inputs" novalidate>
           <div class="row">
             <div class="field">
-              <label for="release-date">Expected release</label>
+              <label for="release-date">Release date you expect</label>
               <input class="input" type="date" id="release-date" name="release-date" required>
-              <span class="hint">Default: 90 days from today</span>
+              <span class="hint">Your guess. We start at 90 days from today.</span>
             </div>
             <div class="field">
               <label for="n-versions">Number of versions</label>
@@ -77,9 +78,9 @@
           <div class="field">
             <label for="album-type">Album type</label>
             <select class="input" id="album-type" name="album-type"></select>
-            <span class="hint">Default: same as the last album</span>
+            <span class="hint">Your guess. We start with the last album's type.</span>
           </div>
-          <button class="btn block" type="submit" id="go">Go</button>
+          <button class="btn block" type="submit" id="go">Forecast</button>
         </form>
       </section>
 

@@ -1,13 +1,13 @@
 // Artist page: search, floating word cloud, album timeline.
 import { loadIndex, loadArtist } from './data.js';
 import { mountSearch } from './search.js';
-import { timelineItem } from './timeline.js';
+import { timelineItem, timelineKey } from './timeline.js';
 import { mountCloud } from './cloud.js';
 import { currentRoster } from './roster.js';
 import * as CFG from '../config.js';
 import { formUrl,
   el, boot, qs, setQs, weightedSample, weightedPick, fmtYm, maskedText, fmtDate, fmtPct, typeLabel, tierLabel, formLink,
-  noForecastReasons, comparisonNote, setArtistTitle,
+  comparisonNote, setArtistTitle, actKind, fixLink, NO_FORECAST_TEXT,
 } from './util.js';
 
 boot();
@@ -61,27 +61,24 @@ async function show(id) {
   view.append(el('header', { class: 'glass artist-head' },
     el('h2', {}, m.name_en, el('span', { class: 'kr' }, m.name_kr || '')),
     el('p', { class: 'meta' },
-      `${m.is_solo ? 'Solo' : m.gender === 'female' ? 'Girl group' : m.gender === 'male' ? 'Boy group' : 'Co-ed group'} · `,
-      `debut ${m.debut_date ? fmtDate(m.debut_date) : 'not in our database yet'} · ${tierLabel(m.tier)} tier`,
+      `${actKind(m) === 'data not available' ? 'Type: data not available' : actKind(m)} · `,
+      `debut ${m.debut_date ? fmtDate(m.debut_date) : 'date not in our database yet'} · last album's first week ${tierLabel(m.tier)}`,
     ),
     headRoster(a),
     el('p', { class: 'meta' },
       m.has_prediction
         ? el('a', { href: `../?id=${encodeURIComponent(m.id)}` }, 'Forecast the next album →')
-        : el('span', { class: 'muted' }, `No forecast. ${noForecastReasons(a).sentences.join(' ')}`),
+        : el('span', { class: 'muted' }, `No forecast. ${NO_FORECAST_TEXT}`),
     ),
     // latest album skipped as a sales-data anomaly (export forecast_note, forecast artists only)
     m.has_prediction ? comparisonNote(a) : null,
   ));
 
-  view.append(el('div', { class: 'fixbar' },
-    formLink(formUrl('fix'), "I'm a fan and I want to fix the data", 'btn big fix'),
-    el('p', {}, 'Anonymous, one minute, no account. Tell us the artist, the album, which number is wrong and (optionally) a source.'),
-  ));
 
   const tl = (a.timeline || []).slice().reverse();      // newest first
   if (!tl.length) { view.append(notice('No albums yet', 'Nothing in the timeline for this artist.')); return; }
 
+  view.append(timelineKey());
   const list = el('ol', { class: 'timeline' });
   for (const t of tl) list.append(timelineItem(t));
   view.append(list);
@@ -95,10 +92,7 @@ function headRoster(a) {
   const m = a.meta;
   return el('div', { class: 'roster' },
     el('span', { class: 'names' }, names.length ? names.join(' · ') : (m.n_members != null ? `${m.n_members} member${m.n_members === 1 ? '' : 's'} (names not in our database yet)` : 'not in our database yet')),
-    el('div', { class: 'note' },
-      el('span', {}, 'This is the roster in our database — corrections welcome'),
-      formLink(formUrl('fix'), 'Something looks off? Tell me →', 'btn sm ghost'),
-    ),
+    el('div', { class: 'note' }, el('span', {}, 'This is the roster in our database — ', fixLink())),
   );
 }
 

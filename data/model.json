@@ -4,7 +4,7 @@
  "contract_hash": "02cf7a98e948a6f457bab0b74efe8325423dae32811e8f0fd74516369c8ccf09",
  "data_cutoff": "2026-09-03",
  "holdout_from": "2026-09-04",
- "generated_at": "2026-09-28T18:31:01+00:00",
+ "generated_at": "2026-09-28T22:02:49+00:00",
  "grid_anchor_date": "2026-09-28",
  "ig_data_through": "2026-08",
  "yt_data_through": "2026-09",
@@ -86,9 +86,9 @@
  "tier_metrics": {
   "<5k": {
    "n": 177,
-   "median_err_x": 1.996,
+   "median_err_x": 1.995,
    "hit_50": 0.316,
-   "hit_2x": 0.503,
+   "hit_2x": 0.508,
    "coverage_by_level": {
     "50": {
      "covered": 0.463,
@@ -111,7 +111,7 @@
   },
   "5k-50k": {
    "n": 405,
-   "median_err_x": 1.561,
+   "median_err_x": 1.562,
    "hit_50": 0.452,
    "hit_2x": 0.704,
    "coverage_by_level": {
@@ -163,7 +163,7 @@
    "n": 135,
    "median_err_x": 1.285,
    "hit_50": 0.696,
-   "hit_2x": 0.926,
+   "hit_2x": 0.919,
    "coverage_by_level": {
     "50": {
      "covered": 0.526,
@@ -171,9 +171,9 @@
      "below_lower_share": 0.104
     },
     "80": {
-     "covered": 0.793,
+     "covered": 0.785,
      "above_upper_share": 0.156,
-     "below_lower_share": 0.052
+     "below_lower_share": 0.059
     },
     "90": {
      "covered": 0.881,
@@ -182,7 +182,7 @@
     }
    },
    "above_upper_share": 0.156,
-   "below_lower_share": 0.052
+   "below_lower_share": 0.059
   }
  },
  "overall_metrics": {
@@ -197,9 +197,9 @@
     "below_lower_share": 0.253
    },
    "80": {
-    "covered": 0.795,
+    "covered": 0.794,
     "above_upper_share": 0.089,
-    "below_lower_share": 0.116
+    "below_lower_share": 0.117
    },
    "90": {
     "covered": 0.877,
@@ -208,14 +208,14 @@
    }
   },
   "above_upper_share": 0.089,
-  "below_lower_share": 0.116
+  "below_lower_share": 0.117
  },
  "warning": {
   "threshold": 0.8,
-  "precision": 0.601,
+  "precision": 0.598,
   "base_rate": 0.319,
   "recall": 0.319,
-  "n_warned": 193,
+  "n_warned": 194,
   "n": 1140,
   "calibration": [
    {
@@ -232,7 +232,7 @@
    },
    {
     "p_range": "30-40%",
-    "n": 224,
+    "n": 223,
     "mean_predicted_pct": 35,
     "actual_drop_pct": 30
    },
@@ -240,11 +240,11 @@
     "p_range": "40-50%",
     "n": 174,
     "mean_predicted_pct": 45,
-    "actual_drop_pct": 49
+    "actual_drop_pct": 50
    },
    {
     "p_range": "50-60%",
-    "n": 94,
+    "n": 95,
     "mean_predicted_pct": 54,
     "actual_drop_pct": 55
    },

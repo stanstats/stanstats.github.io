@@ -1,7 +1,7 @@
 // Home page: search → inputs → Go → share-friendly result card.
 import { loadModel, loadIndex, loadArtist } from './data.js';
 import { mountSearch } from './search.js';
-import { renderAxis } from './axis.js';
+import { renderAxis, maskedValue } from './axis.js';
 import { renderTimeline } from './timeline.js';
 import { mountCloud } from './cloud.js';
 import { currentRoster } from './roster.js';
@@ -9,7 +9,7 @@ import * as CFG from '../config.js';
 import { formUrl,
   el, boot, qs, setQs, weightedPick, shuffle, isShowcase, fmtInt, fmtDate, fmtYm, fmtPct, pct100,
   typeLabel, tierLabel, TYPES, toISODate, addDays, monthOffset, clamp, formLink,
-  noForecastReasons, comparisonNote, ANOMALY_WHY, ANOMALY_ABOUT, setArtistTitle,
+  comparisonNote, setArtistTitle, actKind, fixLink, NO_FORECAST_TEXT,
 } from './util.js';
 
 boot();
@@ -65,7 +65,7 @@ async function pick(a, autoGo = false, { scroll = true } = {}) {
   result.append(el('p', { class: 'muted small' }, 'Loading…'));
   try {
     artist = await loadArtist(a.id);
-    setArtistTitle(artist.meta, '초동 예측 · next album first-week sales forecast');
+    setArtistTitle(artist.meta, 'next album first-week sales forecast (초동 예측)');
   } catch (err) {
     result.innerHTML = '';
     result.append(notice('Data not available', `We do not have a data file for ${a.name_en} yet.`));
@@ -75,7 +75,7 @@ async function pick(a, autoGo = false, { scroll = true } = {}) {
   typeIn.value = d.type && TYPES.includes(d.type) ? d.type : 'mini';
   const lastNv = artist.latest?.n_versions;
   nvIn.value = d.n_versions ?? lastNv ?? 1;
-  nvHint.textContent = lastNv != null ? `Last album: ${lastNv} version${lastNv === 1 ? '' : 's'}` : 'Last album: version count unknown';
+  nvHint.textContent = lastNv != null ? `Your guess. The last album had ${lastNv} version${lastNv === 1 ? '' : 's'}.` : 'Your guess. We do not know how many versions the last album had.';
   if (!artist.meta.has_prediction || !artist.grid?.length) {
     result.innerHTML = '';
     result.append(coldStart(artist));
@@ -88,9 +88,9 @@ async function pick(a, autoGo = false, { scroll = true } = {}) {
 function calibSentence(m) {
   const bins = (m && m.warning && m.warning.calibration) || [];
   const ok = bins.filter(b => b && b.n >= 30 && b.mean_predicted_pct != null && b.actual_drop_pct != null);
-  if (ok.length < 2) return 'in past tests the stated chance matched how often the drop actually happened.';
+  if (ok.length < 2) return 'In past tests the stated chance matched how often the drop actually happened.';
   const lo = ok[Math.min(1, ok.length - 1)], hi = ok[ok.length - 1];
-  return `when the model said ${lo.mean_predicted_pct}%, about ${lo.actual_drop_pct}% of those albums actually dropped that much; when it said ${hi.mean_predicted_pct}%, about ${hi.actual_drop_pct}% did.`;
+  return `In past tests it held up: when we said ${lo.mean_predicted_pct}%, ${lo.actual_drop_pct}% of those albums did fall that far; when we said ${hi.mean_predicted_pct}%, ${hi.actual_drop_pct}% did.`;
 }
 
 function go({ scroll = true } = {}) {
@@ -106,7 +106,7 @@ function go({ scroll = true } = {}) {
   if (isNaN(chosen) || chosen > addDays(cutoff, 365)) {
     result.append(el('div', { class: 'cold' },
       el('h3', {}, 'Not supported yet'),
-      el('p', {}, `Our data runs to ${fmtDate(toISODate(cutoff))}. We only forecast releases up to one year after that (until ${fmtDate(toISODate(addDays(cutoff, 365)))}), because further out the data no longer supports a useful forecast.`),
+      el('p', {}, `Our data ends ${fmtDate(toISODate(cutoff))}. We only forecast releases up to ${fmtDate(toISODate(addDays(cutoff, 365)))}. Pick an earlier date.`),
     ));
     return;
   }
@@ -133,7 +133,7 @@ function renderCard(row, sc) {
   const tm = model.tier_metrics?.[tier] || {};
   const warn = model.warning || {};
   const ctx = shuffle(artist.context_features || []).slice(0, 3);
-  const kind = m.is_solo ? 'Solo' : m.gender === 'female' ? 'Girl group' : m.gender === 'male' ? 'Boy group' : 'Co-ed group';
+  const kind = actKind(m);
   const names = currentRoster(artist);
 
   const card = el('article', { class: 'glass share-card', id: 'share-card' });
@@ -152,36 +152,41 @@ function renderCard(row, sc) {
 
   // 2. scenario, one grey line
   card.append(el('p', { class: 'sc-scenario' },
-    `If the next album drops in ${fmtYm(sc.date.slice(0, 7))} as a ${typeLabel(sc.type).toLowerCase()} with ${sc.nv} version${sc.nv === 1 ? '' : 's'}`,
-    sc.nvDelta !== 0 ? ` (${sc.nvDelta > 0 ? '+' : ''}${sc.nvDelta} vs last)` : '',
+    el('b', {}, 'Your scenario: '),
+    `a ${typeLabel(sc.type).toLowerCase()} in ${fmtYm(sc.date.slice(0, 7))} with ${sc.nv} version${sc.nv === 1 ? '' : 's'}`,
+    sc.nvDelta !== 0 ? ` (${Math.abs(sc.nvDelta)} ${sc.nvDelta > 0 ? 'more' : 'fewer'} than the last album)` : '',
   ));
 
   if (sc.stale) {
     card.append(el('p', { class: 'sc-stale' },
-      `Our data ends ${fmtDate(sc.cutoff)}. This release is more than six months past that, so the forecast is likely to be less accurate than usual.`));
+      `Our data ends ${fmtDate(sc.cutoff)}. A release more than 6 months after that is a longer shot, so expect a less accurate forecast.`));
   }
 
   // 3. the number
   card.append(el('div', { class: 'sc-big' },
     el('div', { class: 'num' }, fmtInt(row.median)),
-    el('div', { class: 'lbl' }, 'our middle guess, first-week copies'),
+    el('div', { class: 'lbl' }, 'our best guess: copies sold in the first week'),
   ));
 
   // 4. the range + info button
   const info = el('button', { class: 'info-btn', type: 'button', 'aria-label': 'How to read this forecast', title: 'How to read this' }, 'i');
   info.addEventListener('click', () => openInfo(row, tm));
   card.append(el('div', { class: 'sc-likely' },
-    el('p', { class: 'range' }, el('span', {}, 'Likely between ', el('b', {}, fmtInt(row.lo80)), ' and ', el('b', {}, fmtInt(row.hi80))), info),
-    el('p', { class: 'why' }, '80% of past albums like this landed inside · tap ⓘ to see how the bands are made'),
+    el('p', { class: 'range' }, el('span', {}, 'Likely between ', el('span', { class: 'nowrap' }, el('b', {}, fmtInt(row.lo80)), ' and ', el('b', {}, fmtInt(row.hi80)))), info),
+    el('p', { class: 'why' }, 'We build this range to have an 80% chance of holding the real number · tap i for how we know'),
   ));
 
   // 5. axis + two-item legend
   const ax = el('div', { class: 'axis-wrap' });
-  ax.append(renderAxis(row));
+  // reference album = the one ratio_vs_prev and the drop chance compare with (comparison_album when the latest is skipped)
+  const ref = artist.comparison_album || L;
+  const prevV = maskedValue(ref?.sales_masked);
+  ax.append(renderAxis(row, prevV ? { value: prevV, masked: ref.sales_masked, label: artist.comparison_album ? 'compared with' : 'last album', title: ref.title } : null));
   card.append(ax);
   card.append(el('p', { class: 'legend' },
-    el('span', {}, el('i', { class: 'sw median' }), 'our middle guess'),
-    el('span', {}, el('i', { class: 'sw band' }), 'likely ranges (50%, 80%, 90%)'),
+    el('span', {}, el('i', { class: 'sw median' }), 'our best guess'),
+    el('span', {}, el('i', { class: 'sw band' }), 'likely range: 50%, 80%, 90% chance'),
+    prevV ? el('span', {}, el('i', { class: 'sw prev' }), artist.comparison_album ? `${artist.comparison_album.title} (compared with)` : 'last album') : '',
   ));
 
   // 6. chance of a drop (always shown; heads-up box when it is more likely than not)
@@ -190,8 +195,8 @@ function renderCard(row, sc) {
     const hot = pDrop >= 50;
     card.append(el('div', { class: hot ? 'warn' : 'chance' },
       el('b', {}, hot ? '⚠ Heads-up: ' : ''),
-      'Chance of selling at least 20% fewer copies than the last album: ', el('b', {}, `${pDrop}%`),
-      hot ? ` — when the model has put the odds this high before, it was right about ${pct100(warn.precision ?? 0)} of the time (any album: ${pct100(warn.base_rate ?? 0)}).` : '',
+      `Chance of selling 20% or more below the ${artist.comparison_album ? 'compared album' : 'last album'}: `, el('b', {}, `${pDrop}%`),
+      hot ? ' (more likely than not; tap i for how often such warnings came true)' : '',
     ));
   }
 
@@ -203,8 +208,8 @@ function renderCard(row, sc) {
   card.append(el('div', { class: 'disclaimer' },
     el('div', { class: 'big' }, 'THIS SALES FORECAST IS FOR ENTERTAINMENT ONLY'),
     el('div', { class: 'sub' },
-      `For artists in the ${tierLabel(tier)} tier, ${per100(tm.above_upper_share)}% of past albums sold more than the top of our likely range, `,
-      `and ${per100(tm.below_lower_share)}% sold less than the bottom. The model cannot see a breakout coming.`),
+      `Among artists whose last album sold ${tierLabel(tier)} in its first week, ${per100(tm.above_upper_share)}% of past albums beat the top of our 80% range `,
+      `and ${per100(tm.below_lower_share)}% fell below the bottom. A sudden breakout is not something we can see coming.`),
   ));
 
   // 8. facts list
@@ -214,20 +219,28 @@ function renderCard(row, sc) {
   fact('f-debut', 'Debut', m.debut_date ? fmtDate(m.debut_date) : 'not in our database yet');
   // Facts only (user 2026-09-13): title, month, type and size range of the latest album; no change-vs-previous here
   // (that belongs to the timeline below).
-  if (L) fact('f-last wide', 'Latest album', `${L.title} · ${fmtYm(L.release_ym)} · ${typeLabel(L.type)} · sold in the ${tierLabel(L.tier)} range`);
+  if (L) fact('f-last wide', 'Latest album', `${L.title} · ${fmtYm(L.release_ym)} · ${typeLabel(L.type)} · first week ${tierLabel(L.tier)}`);
   if (!m.is_solo) fact('f-members wide', 'Members', names.length
     ? el('span', { class: 'pills' }, ...names.map((n) => el('span', { class: 'pill' }, n)))
     : (m.n_members != null ? `${m.n_members} member${m.n_members === 1 ? '' : 's'} (names not in our database yet)` : 'not in our database yet'));
-  if (ctx.length) fact('f-model wide', 'Model looked at',
-    el('ul', { class: 'ctx-list' }, ...ctx.map((c) => el('li', {}, el('span', { class: 'ctx-label' }, c.label_en), el('b', { class: 'ctx-value' }, c.value)))),
-    el('p', { class: 'ctx-note' }, `Instagram and YouTube figures are the latest 3 months in our data (Instagram through ${fmtYm(model.ig_data_through || '')}${model.yt_data_through ? `, YouTube through ${fmtYm(model.yt_data_through)}` : ''}); the forecast uses the same values whatever release date you choose.`));
+  const ctxShown = ctx.map((c) => gapFeature(c, L, sc.date));
+  const social = ctxShown.some((c) => /Instagram|YouTube/.test(c.label_en));
+  if (ctx.length) fact('f-model wide', 'Some of what the model used',
+    el('ul', { class: 'ctx-list' }, ...ctxShown.map((c) => el('li', {}, el('span', { class: 'ctx-label' }, c.label_en), el('b', { class: 'ctx-value' }, c.value)))),
+    social ? el('p', { class: 'ctx-note' }, `Instagram and YouTube: the latest 3 months we have (to ${fmtYm(model.ig_data_through || '')}${model.yt_data_through ? ` / ${fmtYm(model.yt_data_through)}` : ''}), the same whatever date you pick.`) : '');
   card.append(facts);
 
   // 9. roster note + Fix data, at the very end
   card.append(el('div', { class: 'sc-fix' },
-    el('span', {}, '✎ roster in our database — corrections welcome'),
-    formLink(formUrl('fix'), 'Something looks off? Tell me →', 'btn sm ghost'),
+    el('span', {}, m.is_solo ? 'Facts from our database — ' : 'Roster from our database — ', fixLink()),
   ));
+  // share as images (owner 2026-09-28): a quiet text button, Home result card only; share.js is loaded on first use
+  const shareBtn = el('button', { class: 'sc-share', type: 'button' }, 'Share as images');
+  shareBtn.addEventListener('click', async () => {
+    const { openShare } = await import('./share.js');
+    openShare({ artist, model, row, sc, facts: (artist.context_features || []).map((c) => gapFeature(c, L, sc.date)) });
+  });
+  card.append(el('p', { class: 'sc-share-row' }, shareBtn));
   card.append(el('div', { class: 'sc-foot' },
     el('span', { class: 'logo' }, 'K-pop 초동 forecast'),
     el('span', {}, CFG.SITE_URL ? CFG.SITE_URL.replace(/^https?:\/\//, '') : `data as of ${model.data_cutoff || '—'}`),
@@ -238,9 +251,13 @@ function renderCard(row, sc) {
 /** "How to read this" explanation with the current numbers (bottom sheet on phones). */
 function openInfo(row, tm) {
   const name = artist.meta.name_en;
-  const missPct = tm.median_err_x != null ? Math.round((tm.median_err_x - 1) * 100) : null;
+  const x = tm.median_err_x;
+  const upPct = x != null ? Math.round((x - 1) * 100) : null;          // x times too low
+  const downPct = x != null ? Math.round((1 - 1 / x) * 100) : null;    // x times too high
   const over2x = tm.hit_2x != null ? Math.round((1 - tm.hit_2x) * 100) : null;
   const n = tm.n != null ? fmtInt(tm.n) : 'the';
+  const warn = model.warning || {};
+  const up = row.hi80 / row.median, down = row.median / row.lo80;
   let dlg = document.getElementById('info-dialog');
   if (!dlg) {
     dlg = el('dialog', { id: 'info-dialog', class: 'sheet', 'aria-labelledby': 'info-title' });
@@ -251,35 +268,46 @@ function openInfo(row, tm) {
   dlg.append(
     el('div', { class: 'sheet-head' }, el('h3', { id: 'info-title' }, 'How to read this forecast'),
       el('button', { class: 'clear', type: 'button', 'aria-label': 'Close', onclick: () => dlg.close() }, '×')),
-    el('p', {}, `Our middle guess for ${name}'s next album is `, el('b', {}, fmtInt(row.median)), ' first-week copies. Half of the time the real number would be above this, half below.'),
-    el('p', {}, 'The three purple bands are how sure we are: there is a 50% chance the real first week lands between ',
-      el('b', {}, fmtInt(row.lo50)), ' and ', el('b', {}, fmtInt(row.hi50)), ', an 80% chance it lands between ',
-      el('b', {}, fmtInt(row.lo80)), ' and ', el('b', {}, fmtInt(row.hi80)), ', and a 90% chance it lands between ',
-      el('b', {}, fmtInt(row.lo90)), ' and ', el('b', {}, fmtInt(row.hi90)), '.'),
-    el('p', {}, `How do we know? We tested this on ${n} past albums by artists of a similar size: our guess was typically off by about `,
-      el('b', {}, missPct != null ? `${missPct}%` : '?'), ' either way, and ', el('b', {}, over2x != null ? `${over2x}%` : '?'),
-      ' of the time it was off by more than double. Those past misses are what set the width of the bands.'),
-    el('p', {}, 'The "chance of selling at least 20% fewer" number is read off the same bands. It is honest: ' + calibSentence(model)),
-    el('p', {}, 'The bands are wider on the upside because album sales move in multiples, not in fixed amounts — a jump from ',
-      el('b', {}, fmtInt(row.median)), ' to ', el('b', {}, fmtInt(row.hi80)), ' and a drop to ', el('b', {}, fmtInt(row.lo80)),
-      ' are the same size in percentage terms.'),
+    el('p', {}, `Our best guess for ${name}'s next album is `, el('b', {}, fmtInt(row.median)),
+      ' copies in the first week. The real number has a 50% chance of coming in above it and a 50% chance of coming in below it.'),
+    el('p', {}, 'The three purple bands show how sure we are:'),
+    el('ul', { class: 'info-bands' },
+      el('li', {}, '50% chance: ', el('b', {}, `${fmtInt(row.lo50)} – ${fmtInt(row.hi50)}`)),
+      el('li', {}, '80% chance: ', el('b', {}, `${fmtInt(row.lo80)} – ${fmtInt(row.hi80)}`)),
+      el('li', {}, '90% chance: ', el('b', {}, `${fmtInt(row.lo90)} – ${fmtInt(row.hi90)}`))),
+    el('p', {}, `How do we know? We checked ${n} past albums by artists whose previous album sold about as much as ${name}'s. Our guess was usually within `,
+      el('b', {}, upPct != null ? `+${upPct}% or −${downPct}%` : '?'), ' of the real number, and ', el('b', {}, over2x != null ? `${over2x}%` : '?'),
+      ' of the time it was more than double or less than half. Those past misses set the width of the bands.'),
+    el('p', {}, 'The chance of selling 20% or more below the last album comes from the same bands. ' + calibSentence(model)
+      + (warn.precision != null && warn.base_rate != null
+        ? ` When we put that chance above 50%, ${pct100(warn.precision)} of those albums did fall that far; across all albums, ${pct100(warn.base_rate)} did.` : '')),
+    el('p', {}, 'The bands stretch further up than down because sales move in multiples: going from ',
+      el('b', {}, fmtInt(row.median)), ' up to ', el('b', {}, fmtInt(row.hi80)), ` is about ×${up.toFixed(1)}, and going down to `,
+      el('b', {}, fmtInt(row.lo80)), ` is about ÷${down.toFixed(1)}. The same step both ways.`),
     el('p', { class: 'small muted' }, el('a', { href: './about/#how-to-read' }, 'More on the About page →')),
   );
   if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+}
+
+/** The gap row of context_features: the export can only count the gap up to today, so the front end adds the months
+ *  to the release date the reader picked (review 2026-09-28: label said "plus the month you pick", value did not). */
+function gapFeature(c, L, dateISO) {
+  if (!(c.key === 'gap' || /^Gap the forecast assumes/.test(c.label_en || '')) || !L || !L.release_ym) return c;
+  const from = new Date(`${L.release_ym}-15`), to = new Date(dateISO);
+  const days = Math.round((to - from) / 86400000);
+  if (!Number.isFinite(days) || days <= 0) return c;
+  const months = days / 30.44;
+  const value = days < 60 ? `about ${days} days` : months < 24 ? `about ${Math.round(months)} months`
+    : `about ${(days / 365.25).toFixed(1).replace(/\.0$/, '')} years`;
+  return { ...c, label_en: `Gap the forecast assumes: latest album (${fmtYm(L.release_ym)}) → your release date`, value };
 }
 
 function per100(x) { return x == null ? '?' : Math.round(x * 100); }
 
 function coldStart(a) {
   const m = a.meta;
-  // reasons read from the timeline: sales-data anomaly flags (forecast_status) and the training window (2026-09-28)
-  const why = noForecastReasons(a);
-  const n = notice(`${m.name_en} — no forecast`, `We can't anchor a forecast for this act. ${why.sentences.join(' ')}`);
-  if (why.flagged.length) {
-    n.append(el('p', { class: 'anomaly-note' }, el('b', {}, 'Sales data anomaly: '), ANOMALY_WHY, ' ',
-      el('a', { href: ANOMALY_ABOUT }, 'How we spot this')));
-  }
-  n.append(el('p', { class: 'small muted' }, 'Think we are missing an album? '), formLink(formUrl('fix'), 'Missing an album? Tell me →', 'btn sm fix'));
+  const n = notice(`${m.name_en} — no forecast`, NO_FORECAST_TEXT);
+  n.append(el('p', { class: 'small muted' }, 'Missing an album? ', fixLink('Tell us'), '.'));
   return n;
 }
 
@@ -301,5 +329,5 @@ function notice(title, text) {
 function showError(err) {
   console.error(err);
   result.innerHTML = '';
-  result.append(notice('Could not load data', String(err.message || err)));
+  result.append(notice('Could not load data', 'Please reload the page. If it keeps failing, the site may be updating.'));
 }
