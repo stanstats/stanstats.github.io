@@ -10,8 +10,12 @@ export function mountCloud(cloud, fullIndex, onPick) {
   // 2026-09-27; before that: at least 3 albums of history, 2026-09-26 -- a cold-start act like wave to earth must not
   // float past as if it had a forecast). Same rule as the random default on Home.
   const index = fullIndex.filter(isShowcase);
+  let gen = 0;                                               // bumped on every re-render so the old loop and timer stop
   function renderCloud() {
+  const my = ++gen;
+  const alive = () => cloud.isConnected && my === gen;
   cloud.innerHTML = '';
+  cloud.classList.toggle('still', REDUCED);                  // phone asks for less motion: lanes stay put and swipe by hand
   const nLanes = window.innerWidth >= 620 ? 4 : 3;
   const perLane = Math.ceil(POOL_TARGET / nLanes);
   const shown = new Set();
@@ -41,7 +45,7 @@ export function mountCloud(cloud, fullIndex, onPick) {
 
   let last = performance.now();
   function frame(now) {
-    if (!cloud.isConnected) return;
+    if (!alive()) return;
     const dt = Math.min(0.05, (now - last) / 1000); last = now;
     for (const lane of lanes) {
       lane.offset += lane.speed * dt;
@@ -58,7 +62,7 @@ export function mountCloud(cloud, fullIndex, onPick) {
 
   // rotation: new name rises into a lane, the oldest one there fades away
   const timer = setInterval(() => {
-    if (!cloud.isConnected) { clearInterval(timer); return; }
+    if (!alive()) { clearInterval(timer); return; }
     if (document.hidden) return;
     const lane = lanes[Math.floor(Math.random() * lanes.length)];
     const candidates = index.filter((a) => !shown.has(a.id));
@@ -93,5 +97,10 @@ export function mountCloud(cloud, fullIndex, onPick) {
   return link;
 }
   renderCloud();
-  let rw; window.addEventListener('resize', () => { clearTimeout(rw); rw = setTimeout(renderCloud, 250); });
+  // Phones fire resize whenever the address bar shows or hides while scrolling; only a real width change re-deals.
+  let rw, lastW = window.innerWidth;
+  window.addEventListener('resize', () => {
+    clearTimeout(rw);
+    rw = setTimeout(() => { if (window.innerWidth !== lastW) { lastW = window.innerWidth; renderCloud(); } }, 250);
+  });
 }

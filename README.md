@@ -71,4 +71,4 @@ hidden numbers such as 45*,***.
 Corrections, missing artists and other messages go through the form linked on the Home, Artist and About pages. Source
 maintainers who want a credit worded differently, or something removed, are welcome to use it too.
 
-*Generated 2026-09-29 by the site build.*
+*Generated 2026-09-30 by the site build.*
