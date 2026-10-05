@@ -14,7 +14,7 @@ the fact. For entertainment only.
 
 ## What is on the site
 
-- **Forecast** — pick any of 500 artists, an album type and a version count; get a best guess for the first week,
+- **Forecast** — pick any of 563 artists, an album type and a version count; get a best guess for the first week,
   three likely ranges (50%, 80% and 90% chance) and the chance that it sells 20% or more below the last album.
   "Share as images" turns it into Instagram-size cards (made in your browser; nothing is uploaded).
 - **Artist timelines** — every past album with its change from the album before and what the model reads into that
@@ -71,4 +71,4 @@ hidden numbers such as 45*,***.
 Corrections, missing artists and other messages go through the form linked on the Home, Artist and About pages. Source
 maintainers who want a credit worded differently, or something removed, are welcome to use it too.
 
-*Generated 2026-09-30 by the site build.*
+*Generated 2026-10-05 by the site build.*
